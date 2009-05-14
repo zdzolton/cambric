@@ -1,13 +1,13 @@
 require 'erb'
 require 'yaml'
 
-module Cambric
+class Cambric
   
-  def self.load_config(path)
+  def initialize(path)
     @config = YAML::load(ERB.new(IO.read(path)).result)
   end
   
-  def self.config
+  def config
     @config
   end
   
