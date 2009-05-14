@@ -1,0 +1,7 @@
+= cambric
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 Zachary Zolton. See LICENSE for details.
