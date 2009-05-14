@@ -1,6 +1,6 @@
 = cambric
 
-Description goes here.
+Opinionated management and usage of CouchDB from your Ruby apps.
 
 == Copyright
 

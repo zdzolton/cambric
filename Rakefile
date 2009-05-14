@@ -5,10 +5,10 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "cambric"
-    gem.summary = %Q{TODO}
+    gem.summary = %Q{Opinionated management and usage of CouchDB from your Ruby apps.}
     gem.email = "zachary.zolton@gmail.com"
     gem.homepage = "http://github.com/zdzolton/cambric"
-    gem.authors = ["Zachary Zolton"]
+    gem.authors = ["Zachary Zolton", "Geoff Buesing"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 
