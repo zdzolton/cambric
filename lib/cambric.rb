@@ -1,5 +1,6 @@
 require 'erb'
 require 'yaml'
+require 'couchrest'
 
 class Cambric
   
@@ -24,6 +25,11 @@ class Cambric
     @design_doc_name
   end
   
+  def [](db)
+    @database_cache ||= {}
+    @database_cache[db.to_sym] ||= CouchRest.new("localhost:5984").database("#{db}-#{@environment}")
+  end
+  
   def create_all_databases
     server = CouchRest::Server.new("http://localhost:5984")
     @config.each_pair do |db,env_hash|
@@ -36,7 +42,13 @@ class Cambric
     end
   end
   
+  # def push_all_design_docs
+  # end
+  
 private
+
+  # def push_design_doc_for database
+  # end
 
   def validate_options_hash options
     %w(environment design_doc).each do |opt_key|

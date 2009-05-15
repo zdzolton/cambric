@@ -50,10 +50,16 @@ describe "an instance of Cambric" do
           @cambric.config.keys.should include(db)
         end
       end
+      
+      it "should access databases by name" do
+        %w(users tweets).each do |db|
+          @cambric[db].uri.should =~ /localhost:5984\/#{db}-development$/
+        end
+      end
     end
     
   end
-
+  
   describe "when creating databases" do
 
     describe "for specified environment" do
@@ -72,11 +78,14 @@ describe "an instance of Cambric" do
         
         it "should create a database" do
           @cambric.config.keys.each do |db|
-            CouchRest.new("localhost:5984/#{db}-staging").info.should_not be_nil
+            CouchRest.new("localhost:5984").database("#{db}-staging").info.should_not be_nil
           end
         end
         
-        # it "should push a design doc for each directory" do
+        # it "should push the named design doc" do
+        #   @cambric.config.keys.each do |db|
+        #     CouchRest.new("localhost:5984").database("#{db}-staging").get('_design/xop').should_not be_nil
+        #   end
         # end
       end
     end
