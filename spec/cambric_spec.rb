@@ -20,7 +20,7 @@ describe "an instance of Cambric" do
 
   describe "when already instantiated" do
     before :all do
-      @cambric = Cambric.new(load_fixture 'foo-bar.yml')
+      @cambric = Cambric.new(load_fixture 'foo-bar-baz.yml')
     end
 
     describe "when creating all databases for an environment" do
