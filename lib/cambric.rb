@@ -13,7 +13,8 @@ class Cambric
   
   def create_all_databases_for environment
     server = CouchRest::Server.new("http://localhost:5984")
-    @config.keys.each do |db|
+    @config.each_pair do |db,env_hash|
+      raise "No Cambric config for database '#{db}', environment '#{environment}'" unless env_hash.has_key?(environment)
       db_name = "#{db}-#{environment}"
       begin
         server.create_db(db_name)

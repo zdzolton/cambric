@@ -18,13 +18,11 @@ describe "an instance of Cambric" do
     end
   end
 
-  describe "when already instantiated" do
-    before :all do
-      @cambric = Cambric.new(load_fixture 'foo-bar-baz.yml')
-    end
+  describe "when creating databases" do
 
-    describe "when creating databases for 'staging' environment" do
+    describe "for specified environment" do
       before :all do
+        @cambric = Cambric.new(load_fixture 'foo-bar-baz.yml')
         @cambric.create_all_databases_for 'staging'
       end
       
@@ -39,10 +37,21 @@ describe "an instance of Cambric" do
           end
         end
         
-        it "should push a design doc for each directory" do
-        end
+        # it "should push a design doc for each directory" do
+        # end
       end
     end
+
+    describe "for a non-specified environment" do
+      before :all do
+        @cambric = Cambric.new(load_fixture 'degenerate.yml')
+      end
+    
+      it "should raise an error" do
+        lambda{ @cambric.create_all_databases_for 'staging' }.should raise_error
+      end
+    end
+    
   end
 
 end
