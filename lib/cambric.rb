@@ -3,12 +3,17 @@ require 'yaml'
 
 class Cambric
   
-  def initialize(io)
-    @config = YAML::load(ERB.new(io.read).result)
+  def initialize(yaml_config_io, environment)
+    @config = YAML::load(ERB.new(yaml_config_io.read).result)
+    @environment = environment
   end
   
   def config
     @config
+  end
+  
+  def environment
+    @environment
   end
   
   def create_all_databases_for environment

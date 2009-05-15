@@ -4,11 +4,15 @@ describe "an instance of Cambric" do
 
   describe "when instantiating from a config file" do
     before :all do
-      @cambric = Cambric.new(load_fixture 'tweets.yml')
+      @cambric = Cambric.new load_fixture('tweets.yml'), 'development'
+    end
+    
+    it "should have a value for the environment" do
+      @cambric.environment.should_not be_nil
     end
 
     it "should have something for config" do
-      @cambric.config.should_not == nil
+      @cambric.config.should_not be_nil
     end
   
     it "should contain a key for each database entry" do
@@ -22,7 +26,7 @@ describe "an instance of Cambric" do
 
     describe "for specified environment" do
       before :all do
-        @cambric = Cambric.new(load_fixture 'foo-bar-baz.yml')
+        @cambric = Cambric.new load_fixture('foo-bar-baz.yml'), 'staging'
         @cambric.create_all_databases_for 'staging'
       end
       
@@ -44,7 +48,7 @@ describe "an instance of Cambric" do
 
     describe "for a non-specified environment" do
       before :all do
-        @cambric = Cambric.new(load_fixture 'degenerate.yml')
+        @cambric = Cambric.new load_fixture('degenerate.yml'), 'staging'
       end
     
       it "should raise an error" do

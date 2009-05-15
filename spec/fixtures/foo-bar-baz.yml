@@ -1,6 +1,11 @@
 bar:
   staging:
     
+  somewhere:
+    host: some.where
+    
 baz:
   staging:
     
+  somewhere:
+    port: 5566
