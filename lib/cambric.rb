@@ -3,8 +3,8 @@ require 'yaml'
 
 class Cambric
   
-  def initialize(path)
-    @config = YAML::load(ERB.new(IO.read(path)).result)
+  def initialize(string)
+    @config = YAML::load(ERB.new(string).result)
   end
   
   def config

@@ -4,8 +4,15 @@ describe "Cambric" do
 
   describe "when loading a config file" do
     
+    TWITTER_CLONE_YAML = %Q(
+    users:
+
+    tweets:
+
+)
+    
     before :all do
-      @cambric = Cambric.new 'spec/fixtures/tweets.yml'
+      @cambric = Cambric.new(TWITTER_CLONE_YAML)
     end
 
     it "should have something for config" do
