@@ -3,9 +3,12 @@ require 'yaml'
 
 class Cambric
   
-  def initialize(yaml_config_io, environment)
+  def initialize(yaml_config_io, options={})
+    options.keys.map!{ |k| k.to_sym }
     @config = YAML::load(ERB.new(yaml_config_io.read).result)
-    @environment = environment
+    validate_options_hash options
+    @environment = options[:environment]
+    @design_doc_name = options[:design_doc]
     validate_environment_exists_for_all_dbs
   end
   
@@ -15,6 +18,10 @@ class Cambric
   
   def environment
     @environment
+  end
+  
+  def design_doc_name
+    @design_doc_name
   end
   
   def create_all_databases
@@ -30,6 +37,14 @@ class Cambric
   end
   
 private
+
+  def validate_options_hash options
+    %w(environment design_doc).each do |opt_key|
+      unless options.has_key?(opt_key.to_sym)
+        raise "Must provide :#{opt_key} option"
+      end
+    end
+  end
 
   def validate_environment_exists_for_all_dbs
     @config.each_pair do |db,env_hash|
