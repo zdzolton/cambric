@@ -3,23 +3,33 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "an instance of Cambric" do
 
   describe "when instantiating from a config file" do
-    before :all do
-      @cambric = Cambric.new load_fixture('tweets.yml'), 'development'
-    end
     
-    it "should have a value for the environment" do
-      @cambric.environment.should_not be_nil
-    end
-
-    it "should have something for config" do
-      @cambric.config.should_not be_nil
-    end
-  
-    it "should contain a key for each database entry" do
-      %w(users tweets).each do |db|
-        @cambric.config.keys.should include(db)
+    describe "for a non-specified environment" do
+      it "should raise an error" do
+        lambda{ Cambric.new load_fixture('degenerate.yml'), 'staging' }.should raise_error
       end
     end
+
+    describe "for an environment specified in the YAML" do
+      before :all do
+        @cambric = Cambric.new load_fixture('tweets.yml'), 'development'
+      end
+    
+      it "should have a value for the environment" do
+        @cambric.environment.should_not be_nil
+      end
+
+      it "should have something for config" do
+        @cambric.config.should_not be_nil
+      end
+  
+      it "should contain a key for each database entry" do
+        %w(users tweets).each do |db|
+          @cambric.config.keys.should include(db)
+        end
+      end
+    end
+    
   end
 
   describe "when creating databases" do
@@ -43,16 +53,6 @@ describe "an instance of Cambric" do
         
         # it "should push a design doc for each directory" do
         # end
-      end
-    end
-
-    describe "for a non-specified environment" do
-      before :all do
-        @cambric = Cambric.new load_fixture('degenerate.yml'), 'staging'
-      end
-    
-      it "should raise an error" do
-        lambda{ @cambric.create_all_databases 'staging' }.should raise_error
       end
     end
     
