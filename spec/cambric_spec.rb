@@ -24,10 +24,15 @@ describe "an instance of Cambric" do
     end
 
     describe "when creating all databases for an environment" do
-      
-      it "should create a database for each name in cached hash keys config" do
+      before :all do
+        @cambric.create_all_databases_for 'test'
       end
       
+      it "should create a database for each name in cached hash keys config" do
+        @cambric.config.keys.each do |db|
+          CouchRest.new("localhost:5984/#{db}").info.should_not be_nil
+        end
+      end
     end
   end
 
