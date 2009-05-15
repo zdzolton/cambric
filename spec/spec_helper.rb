@@ -12,6 +12,8 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'cambric'
 
+FXITURES_PATH = './spec/fixtures'
+
 def load_fixture *path
   open(File.expand_path(File.join %w(spec fixtures) + path))
 end

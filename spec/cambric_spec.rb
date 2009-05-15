@@ -18,19 +18,22 @@ describe "an instance of Cambric" do
       end
     end
     
-    # it "should assume ./couchdb as the database path" do
-    #   lambda do
-    #     Cambric.new load_fixture('foo-bar-baz.yml'), 
-    #                 :environment => 'staging', 
-    #                 :design_doc => 'xop'
-    #   end.should raise_error
-    # end
+    it "should assume ./couchdb as the database path" do
+      lambda do
+        @cambric = Cambric.new load_fixture('foo-bar-baz.yml'), 
+                               :environment => 'staging', 
+                               :design_doc => 'xop'
+
+        @cambric.push_all_design_docs
+      end.should raise_error
+    end
 
     describe "for an environment specified in the YAML" do
       before :all do
-        @cambric = Cambric.new load_fixture('tweets.yml'), 
+        @cambric = Cambric.new load_fixture('twitter-clone.yml'), 
                                :environment => 'development', 
-                               :design_doc => 'twitter-clone'
+                               :design_doc => 'twitter-clone',
+                               :db_dir => File.join(FXITURES_PATH, 'twitter-clone')
       end
     
       it "should have a value for the environment" do
@@ -43,6 +46,10 @@ describe "an instance of Cambric" do
       
       it "should match the given design document name" do
         @cambric.design_doc_name.should == 'twitter-clone'
+      end
+      
+      it "should match the given database directory" do
+        @cambric.db_dir.should == './spec/fixtures/twitter-clone'
       end
   
       it "should contain a key for each database entry" do
@@ -66,7 +73,8 @@ describe "an instance of Cambric" do
       before :all do
         @cambric = Cambric.new load_fixture('foo-bar-baz.yml'), 
                                :environment => 'staging', 
-                               :design_doc => 'xop'
+                               :design_doc => 'xop',
+                               :db_dir =>  File.join(FXITURES_PATH, 'foo-bar-baz')
         
         @cambric.create_all_databases
       end
