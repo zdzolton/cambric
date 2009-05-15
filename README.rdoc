@@ -1,6 +1,16 @@
-= cambric
+= Cambric
 
 Opinionated management and usage of CouchDB from your Ruby apps.
+
+== Usage
+
+Coming soon...
+
+== Installation
+
+sudo gem install jchris-couchapp jchris-couchrest zdzolton-cambric
+
+Configure Rails: Coming soon...
 
 == Copyright
 
