@@ -14,10 +14,11 @@ class Cambric
   def create_all_databases_for environment
     server = CouchRest::Server.new("http://localhost:5984")
     @config.keys.each do |db|
+      db_name = "#{db}-#{environment}"
       begin
-        server.create_db(db)
+        server.create_db(db_name)
       rescue
-        server.database(db).recreate!
+        server.database(db_name).recreate!
       end
     end
   end

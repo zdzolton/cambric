@@ -23,14 +23,23 @@ describe "an instance of Cambric" do
       @cambric = Cambric.new(load_fixture 'foo-bar-baz.yml')
     end
 
-    describe "when creating all databases for an environment" do
+    describe "when creating databases for 'staging' environment" do
       before :all do
-        @cambric.create_all_databases_for 'test'
+        @cambric.create_all_databases_for 'staging'
       end
       
-      it "should create a database for each name in cached hash keys config" do
-        @cambric.config.keys.each do |db|
-          CouchRest.new("localhost:5984/#{db}").info.should_not be_nil
+      describe "for each name in cached hash keys config" do
+        before :all do
+          @bar = @cambric.config['bar']
+        end
+        
+        it "should create a database" do
+          @cambric.config.keys.each do |db|
+            CouchRest.new("localhost:5984/#{db}-staging").info.should_not be_nil
+          end
+        end
+        
+        it "should push a design doc for each directory" do
         end
       end
     end
