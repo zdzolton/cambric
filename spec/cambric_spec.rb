@@ -27,7 +27,7 @@ describe "an instance of Cambric" do
     describe "for specified environment" do
       before :all do
         @cambric = Cambric.new load_fixture('foo-bar-baz.yml'), 'staging'
-        @cambric.create_all_databases_for 'staging'
+        @cambric.create_all_databases
       end
       
       describe "for each name in cached hash keys config" do
@@ -52,7 +52,7 @@ describe "an instance of Cambric" do
       end
     
       it "should raise an error" do
-        lambda{ @cambric.create_all_databases_for 'staging' }.should raise_error
+        lambda{ @cambric.create_all_databases 'staging' }.should raise_error
       end
     end
     
