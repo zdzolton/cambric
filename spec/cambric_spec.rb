@@ -37,7 +37,7 @@ describe "an instance of Cambric" do
         @cambric = Cambric.new load_fixture('twitter-clone.yml'), 
                                :environment => 'development', 
                                :design_doc => 'twitter-clone',
-                               :db_dir => File.join(FXITURES_PATH, 'twitter-clone')
+                               :db_dir => File.join(FIXTURES_PATH, 'twitter-clone')
       end
     
       it "should have a value for the environment" do
@@ -72,36 +72,27 @@ describe "an instance of Cambric" do
   end
   
   describe "when creating databases" do
-
-    describe "for specified environment" do
-      before :all do
-        @cambric = Cambric.new load_fixture('foo-bar-baz.yml'), 
-                               :environment => 'staging', 
-                               :design_doc => 'xop',
-                               :db_dir =>  File.join(FXITURES_PATH, 'foo-bar-baz')
-        
-        @cambric.create_all_databases
-      end
+    before :all do
+      @cambric = Cambric.new load_fixture('foo-bar-baz.yml'), 
+                             :environment => 'staging', 
+                             :design_doc => 'xop',
+                             :db_dir =>  File.join(FIXTURES_PATH, 'foo-bar-baz')
       
-      describe "for databases baz and bar" do
-        before :all do
-          @server = CouchRest.new("localhost:5984")
-        end
-        
-        it "should create a database" do
-          %w(bar baz).each do |db|
-            @server.database("#{db}-staging").info.should_not be_nil
-          end
-        end
-        
-        it "should push the named design doc" do
-          %w(bar baz).each do |db|
-            @server.database("#{db}-staging").get('_design/xop').should_not be_nil
-          end
-        end
+      @cambric.create_all_databases
+      @server = CouchRest.new("localhost:5984")
+    end
+    
+    it "should be able to access databases, with the environment name" do
+      %w(bar baz).each do |db|
+        @server.database("#{db}-staging").info.should_not be_nil
       end
     end
     
+    it "should have pushed to each the specified design doc name" do
+      %w(bar baz).each do |db|
+        @server.database("#{db}-staging").get('_design/xop').should_not be_nil
+      end
+    end
   end
 
 end
