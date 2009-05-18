@@ -36,20 +36,19 @@ class Cambric
   end
   
   def create_all_databases
-    server = CouchRest::Server.new("http://localhost:5984")
-    @config.each_pair do |db,env_hash|
-      db_name = "#{db}-#{@environment}"
+    @databases.each_pair do |db_name,db|
+      name_with_env = "#{db_name}-#{@environment}"
       begin
-        server.create_db(db_name)
+        db.server.create_db name_with_env
       rescue
-        server.database(db_name).recreate!
+        db.server.database(name_with_env).recreate!
       end
     end
     push_all_design_docs
   end
   
   def push_all_design_docs
-    @config.keys.each{ |db| push_design_doc_for db }
+    @databases.keys.each{ |db| push_design_doc_for db.to_s }
   end
   
 private
