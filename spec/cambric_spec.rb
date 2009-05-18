@@ -1,4 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require 'uri'
 
 describe Cambric do
 
@@ -88,6 +89,23 @@ describe Cambric do
       %w(bar baz).each do |db|
         @server.database("#{db}-staging").get('_design/xop').should_not be_nil
       end
+    end
+  end
+  
+  describe "when the YAML specifies a host or port value" do
+    before :all do
+      @cambric = Cambric.new load_fixture('foo-bar-baz.yml'), 
+                             :environment => 'somewhere', 
+                             :design_doc => 'xop',
+                             :db_dir =>  File.join(FIXTURES_PATH, 'foo-bar-baz')
+    end
+    
+    it "should reflect the host value in the database URI" do
+      URI.parse(@cambric[:bar].uri).host.should == 'some.where'
+    end
+    
+    it "should reflect the port value in the database URI" do
+      URI.parse(@cambric[:baz].uri).port.should == 5566
     end
   end
 

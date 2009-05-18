@@ -12,6 +12,7 @@ class Cambric
     @design_doc_name = options[:design_doc]
     @db_dir = File.expand_path(options[:db_dir] || './couchdb')
     validate_environment_exists_for_all_dbs
+    initialize_databases
   end
   
   def config
@@ -31,8 +32,7 @@ class Cambric
   end
   
   def [](db)
-    @database_cache ||= {}
-    @database_cache[db.to_sym] ||= CouchRest.new("localhost:5984").database("#{db}-#{@environment}")
+    @databases[db.to_sym]
   end
   
   def create_all_databases
@@ -71,6 +71,17 @@ private
   def validate_environment_exists_for_all_dbs
     @config.each_pair do |db,env_hash|
       raise "No Cambric config for DB '#{db}' ENV '#{@environment}'" unless env_hash.has_key?(@environment)
+    end
+  end
+  
+  def initialize_databases
+    @databases = {}
+    @config.each_pair do |db,db_hash|
+      env_hash = db_hash[@environment] || {}
+      host = env_hash['host'] || 'localhost'
+      port = env_hash['port'] || 5984
+      server = CouchRest.new("http://#{host}:#{port}")
+      @databases[db.to_sym] = server.database("#{db}-#{@environment}")
     end
   end
   
