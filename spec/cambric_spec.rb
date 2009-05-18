@@ -62,9 +62,11 @@ describe "an instance of Cambric" do
         end
       end
       
-      it "should access databases by name" do
-        %w(users tweets).each do |db|
-          @cambric[db].uri.should =~ /localhost:5984\/#{db}-development$/
+      it "should hash-style access databases, by name, as string or symbol" do
+        %w(users tweets).each do |db_name|
+          [db_name, db_name.to_sym].each do |db|
+            @cambric[db].uri.should =~ /localhost:5984\/#{db}-development$/
+          end
         end
       end
     end
