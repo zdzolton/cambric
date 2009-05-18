@@ -73,12 +73,10 @@ describe "an instance of Cambric" do
   
   describe "when creating databases" do
     before :all do
-      @cambric = Cambric.new load_fixture('foo-bar-baz.yml'), 
-                             :environment => 'staging', 
-                             :design_doc => 'xop',
-                             :db_dir =>  File.join(FIXTURES_PATH, 'foo-bar-baz')
-      
-      @cambric.create_all_databases
+      Cambric.new(load_fixture('foo-bar-baz.yml'), 
+                  :environment => 'staging', 
+                  :design_doc => 'xop',
+                  :db_dir =>  File.join(FIXTURES_PATH, 'foo-bar-baz')).create_all_databases
       @server = CouchRest.new("localhost:5984")
     end
     
