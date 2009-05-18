@@ -6,14 +6,18 @@ describe "an instance of Cambric" do
     
     describe "when not given the design document name" do
       it "should raise an error" do
-        lambda{ Cambric.new load_fixture('tweets.yml'), :environment => 'development' }.should raise_error
+        lambda do 
+          Cambric.new load_fixture('tweets.yml'), :environment => 'development' 
+        end.should raise_error
       end
     end
 
     describe "for a non-specified environment" do
       it "should raise an error" do
         lambda do
-          Cambric.new load_fixture('degenerate.yml'), :environment => 'staging', :design_doc => 'blarg'
+          Cambric.new load_fixture('degenerate.yml'), 
+                      :environment => 'staging', 
+                      :design_doc => 'blarg'
         end.should raise_error
       end
     end
@@ -79,22 +83,22 @@ describe "an instance of Cambric" do
         @cambric.create_all_databases
       end
       
-      describe "for each name in cached hash keys config" do
+      describe "for databases baz and bar" do
         before :all do
-          @bar = @cambric.config['bar']
+          @server = CouchRest.new("localhost:5984")
         end
         
         it "should create a database" do
-          @cambric.config.keys.each do |db|
-            CouchRest.new("localhost:5984").database("#{db}-staging").info.should_not be_nil
+          %w(bar baz).each do |db|
+            @server.database("#{db}-staging").info.should_not be_nil
           end
         end
         
-        # it "should push the named design doc" do
-        #   @cambric.config.keys.each do |db|
-        #     CouchRest.new("localhost:5984").database("#{db}-staging").get('_design/xop').should_not be_nil
-        #   end
-        # end
+        it "should push the named design doc" do
+          %w(bar baz).each do |db|
+            @server.database("#{db}-staging").get('_design/xop').should_not be_nil
+          end
+        end
       end
     end
     

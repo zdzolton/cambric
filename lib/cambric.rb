@@ -57,7 +57,7 @@ private
   def push_design_doc_for database
     design_doc_path = File.expand_path(File.join(@db_dir, database))
     raise "Database directory #{design_doc_path} does not exist!" unless File.exist?(design_doc_path)
-    `cd #{design_doc_path} && couchapp push #{@design_doc_name} #{self[database].uri}`
+    `couchapp push #{design_doc_path} #{@design_doc_name} #{self[database].uri}`
   end
 
   def validate_options_hash options
@@ -70,7 +70,7 @@ private
 
   def validate_environment_exists_for_all_dbs
     @config.each_pair do |db,env_hash|
-      raise "No Cambric config for database '#{db}', environment '#{@environment}'" unless env_hash.has_key?(@environment)
+      raise "No Cambric config for DB '#{db}' ENV '#{@environment}'" unless env_hash.has_key?(@environment)
     end
   end
   
