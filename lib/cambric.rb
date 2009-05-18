@@ -61,26 +61,22 @@ private
   
   def initialize_databases
     @databases = {}
-    @config.each_pair do |db,conn_by_env|
+    @config.each_pair do |db_name,conn_by_env|
       conn_settings = conn_by_env[@environment] || {}
       host = conn_settings['host'] || 'localhost'
       port = conn_settings['port'] || 5984
-      server = CouchRest.new("http://#{host}:#{port}")
-      @databases[db.to_sym] = DatabaseWithAssumedDesignDocName.new(@design_doc_name,
-                                                                   server,
-                                                                   "#{db}-#{@environment}")
+      database = CouchRest.new("http://#{host}:#{port}").database("#{db_name}-#{@environment}")
+      database.extend AssumeDesignDocName
+      database.design_doc_name = @design_doc_name
+      @databases[db_name.to_sym] = database
     end
   end
   
-  class DatabaseWithAssumedDesignDocName < ::CouchRest::Database
-    
-    def initialize design_doc_name, server, name
-      @design_doc_name = design_doc_name
-      super server, name
-    end
+  module AssumeDesignDocName
+
+    attr_accessor :design_doc_name
     
     def view name, options={}, &block
-      puts "#{@design_doc_name}/#{name}"
       super "#{@design_doc_name}/#{name}", options, &block
     end
     
