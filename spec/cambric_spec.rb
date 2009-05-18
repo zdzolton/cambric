@@ -32,6 +32,7 @@ describe Cambric do
   end
 
   describe "after initializing with required information" do
+    
     before :all do
       @cambric = Cambric.new load_fixture('twitter-clone.yml'), 
                              :environment => 'development', 
@@ -68,6 +69,23 @@ describe Cambric do
         end
       end
     end
+    
+    describe "after pushing up the databases" do
+      before :all do
+        @cambric.create_all_databases
+        @tweets_db = @cambric[:tweets]
+      end
+      
+      it "should access views with omitted design doc name" do
+        @tweets_db.save_doc :author => 'marbles',
+                            :message => 'Is this pork or beef, @Randy?',
+                            :followers => ['randy','zdzolton','trevorturk'],
+                            :created_at => Time.now
+
+        @tweets_db.view 'by_follower_and_created_at', :limit => 1
+      end
+    end
+    
   end
     
   describe "when creating databases" do

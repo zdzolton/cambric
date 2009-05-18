@@ -12,7 +12,7 @@ class Cambric
     validate_options_hash options
     @environment = options[:environment]
     @design_doc_name = options[:design_doc]
-    @db_dir = File.expand_path(options[:db_dir] || './couchdb')
+    @db_dir = options[:db_dir] || './couchdb'
     validate_environments_exists_for_all_dbs
     initialize_databases
   end
@@ -66,8 +66,24 @@ private
       host = conn_settings['host'] || 'localhost'
       port = conn_settings['port'] || 5984
       server = CouchRest.new("http://#{host}:#{port}")
-      @databases[db.to_sym] = server.database("#{db}-#{@environment}")
+      @databases[db.to_sym] = DatabaseWithAssumedDesignDocName.new(@design_doc_name,
+                                                                   server,
+                                                                   "#{db}-#{@environment}")
     end
+  end
+  
+  class DatabaseWithAssumedDesignDocName < ::CouchRest::Database
+    
+    def initialize design_doc_name, server, name
+      @design_doc_name = design_doc_name
+      super server, name
+    end
+    
+    def view name, options={}, &block
+      puts "#{@design_doc_name}/#{name}"
+      super "#{@design_doc_name}/#{name}", options, &block
+    end
+    
   end
   
 end
