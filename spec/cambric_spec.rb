@@ -53,7 +53,7 @@ describe "an instance of Cambric" do
       end
       
       it "should match the given database directory" do
-        @cambric.db_dir.should == './spec/fixtures/twitter-clone'
+        @cambric.db_dir.should =~ /\/spec\/fixtures\/twitter-clone/
       end
   
       it "should contain a key for each database entry" do

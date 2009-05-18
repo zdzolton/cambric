@@ -10,7 +10,7 @@ class Cambric
     validate_options_hash options
     @environment = options[:environment]
     @design_doc_name = options[:design_doc]
-    @db_dir = options[:db_dir] || './couchdb'
+    @db_dir = File.expand_path(options[:db_dir] || './couchdb')
     validate_environment_exists_for_all_dbs
   end
   
@@ -55,7 +55,7 @@ class Cambric
 private
 
   def push_design_doc_for database
-    design_doc_path = File.expand_path(File.join(@db_dir, database))
+    design_doc_path = File.join @db_dir, database
     raise "Database directory #{design_doc_path} does not exist!" unless File.exist?(design_doc_path)
     `couchapp push #{design_doc_path} #{@design_doc_name} #{self[database].uri}`
   end
