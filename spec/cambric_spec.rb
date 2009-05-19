@@ -34,10 +34,10 @@ describe Cambric do
   describe "after initializing with required information" do
     
     before :all do
-      @cambric = Cambric.new load_fixture('twitter-clone.yml'), 
-                             :environment => 'development', 
-                             :design_doc => 'twitter-clone',
-                             :db_dir => File.join(FIXTURES_PATH, 'twitter-clone')
+      @cambric = Cambric.new load_fixture('twitter-clone.yml')
+      @cambric.environment = 'development'
+      @cambric.design_doc_name = 'twitter-clone'
+      @cambric.db_dir = File.join FIXTURES_PATH, 'twitter-clone'
     end
   
     it "should have a value for the environment" do
@@ -90,10 +90,11 @@ describe Cambric do
     
   describe "when creating databases" do
     before :all do
-      Cambric.new(load_fixture('foo-bar-baz.yml'), 
-                  :environment => 'staging', 
-                  :design_doc => 'xop',
-                  :db_dir =>  File.join(FIXTURES_PATH, 'foo-bar-baz')).create_all_databases
+      cambric = Cambric.new load_fixture('foo-bar-baz.yml')
+      cambric.environment = 'staging'
+      cambric.design_doc_name = 'xop'
+      cambric.db_dir = File.join FIXTURES_PATH, 'foo-bar-baz'
+      cambric.create_all_databases
       @server = CouchRest.new("localhost:5984")
     end
     
@@ -112,10 +113,10 @@ describe Cambric do
   
   describe "when the YAML specifies a host or port value" do
     before :all do
-      @cambric = Cambric.new load_fixture('foo-bar-baz.yml'), 
-                             :environment => 'somewhere', 
-                             :design_doc => 'xop',
-                             :db_dir =>  File.join(FIXTURES_PATH, 'foo-bar-baz')
+      @cambric = Cambric.new load_fixture('foo-bar-baz.yml')
+      @cambric.environment = 'somewhere'
+      @cambric.design_doc_name = 'xop'
+      @cambric.db_dir = File.join FIXTURES_PATH, 'foo-bar-baz'
     end
     
     it "should reflect the host value in the database URI" do

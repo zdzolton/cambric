@@ -4,24 +4,26 @@ require 'couchrest'
 
 class Cambric
   
-  attr_reader :config, :environment, :design_doc_name, :db_dir
+  attr_reader :config
+  attr_accessor :environment, :design_doc_name, :db_dir
   
-  def initialize(yaml_config_io, options={})
-    options.keys.map!{ |k| k.to_sym }
+  def initialize(yaml_config_io)
+    # options.keys.map!{ |k| k.to_sym }
     @config = YAML::load(ERB.new(yaml_config_io.read).result)
-    validate_options_hash options
-    @environment = options[:environment]
-    @design_doc_name = options[:design_doc]
-    @db_dir = options[:db_dir] || './couchdb'
-    validate_environments_exists_for_all_dbs
-    initialize_databases
+    # validate_options_hash options
+    # @environment = options[:environment]
+    # @design_doc_name = options[:design_doc]
+    # @db_dir = options[:db_dir] || './couchdb'
+    # validate_environments_exists_for_all_dbs
   end
   
   def [](db)
+    initialize_databases unless @databases
     @databases[db.to_sym]
   end
   
   def create_all_databases
+    initialize_databases unless @databases
     @databases.each_pair do |db_name,db|
       name_with_env = "#{db_name}-#{@environment}"
       begin
