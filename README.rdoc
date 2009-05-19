@@ -6,42 +6,34 @@ Opinionated management and usage of CouchDB from your Ruby apps.
 
 1) Initialize:
 
-<tt>
 @cambric = Cambric.new open('./config/cambric.yml'), 
                        :environment => 'development', 
                        :design_doc => 'twitter-clone'
 
 # Optionally:
 # @cambric.create_all_databases
-</tt>
 
 2) Interact
 
-<tt>
 @tweets_db.save_doc :author => 'marbles',
                     :message => 'Is this pork or beef, @Randy?',
                     :followers => ['randy','zdzolton','trevorturk'],
                     :created_at => Time.now
 
 @tweets_db.view 'by_follower_and_created_at', :limit => 1
-</tt>
 
 3) Push view changes to CouchDB
 
-<tt>
 $ ./script/console
 irb> require 'require cambric.rb' # This needs to change when gem becomes available...! :^/
 irb> @cambric = Cambric.new open('./config/cambric.yml'), 
                        :environment => 'production', 
                        :design_doc => 'twitter-clone'
 irb> @cambric.push_all_design_docs
-</tt>
 
 == Installation
 
-<tt>
 $ sudo gem install jchris-couchapp jchris-couchrest zdzolton-cambric
-</tt>
 
 Configure Rails: Coming soon...
 
