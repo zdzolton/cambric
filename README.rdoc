@@ -1,4 +1,4 @@
-= Cambric v0.2.0
+= Cambric
 
 Opinionated management and usage of CouchDB from your Ruby apps.
 
