@@ -10,7 +10,7 @@ begin
     gem.homepage = "http://github.com/zdzolton/cambric"
     gem.authors = ["Zachary Zolton", "Geoff Buesing"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-    gem.add_dependency('jchris-couchrest', '>= 1.0.5')
+    gem.add_dependency('jchris-couchrest')
   end
 
 rescue LoadError
