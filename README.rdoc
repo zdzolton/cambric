@@ -4,7 +4,7 @@ Opinionated management and usage of CouchDB from your Ruby apps.
 
 == Usage
 
-1) Initialize:
+1) Configure the Cambric instances:
 
   @cambric = Cambric.new open('./config/cambric.yml'), 
                          :environment => 'development', 
@@ -13,8 +13,9 @@ Opinionated management and usage of CouchDB from your Ruby apps.
   # Optionally:
   # @cambric.create_all_databases
 
-2) Interact
+2) Interact with CouchRest::Database instances:
 
+  @tweets_db = @cambric[:tweets]
   @tweets_db.save_doc :author => 'marbles',
                       :message => 'Is this pork or beef, @Randy?',
                       :followers => ['randy','zdzolton','trevorturk'],
@@ -22,7 +23,7 @@ Opinionated management and usage of CouchDB from your Ruby apps.
 
   @tweets_db.view 'by_follower_and_created_at', :limit => 1
 
-3) Push view changes to CouchDB
+3) Push view changes to CouchDB:
 
   $ ./script/console
   irb> require 'require cambric.rb' # This needs to change when gem becomes available...! :^/
@@ -33,9 +34,31 @@ Opinionated management and usage of CouchDB from your Ruby apps.
 
 == Installation
 
+* Install gems:
+
   $ sudo gem install jchris-couchapp jchris-couchrest zdzolton-cambric
 
-Configure Rails: Coming soon...
+* Configure Rails:
+
+Coming soon...
+
+* create a couchdb directory within your project
+  $ cd /your/app/root
+  $ mkdir -p ./couchdb/your_db/views/some_view_name
+  
+* create a ./config/cambric.yml file
+  bar:
+    staging:
+
+    somewhere:
+      host: some.where
+
+  baz:
+    staging:
+
+    somewhere:
+      port: 5566
+  
 
 == Copyright
 
