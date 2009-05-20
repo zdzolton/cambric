@@ -2,35 +2,69 @@
 
 Opinionated management and usage of CouchDB from your Ruby apps.
 
+(BTW, there's nothing specific to Rails in how this works.)
+
 == Usage
 
 1) Configure the Cambric instances:
 
-  @cambric = Cambric.new open('./config/cambric.yml'), 
-                         :environment => 'development', 
-                         :design_doc => 'twitter-clone'
-
+  Cambric.configure do |config|
+    config.design_doc_name = 'twitter-clone'
+    config.environment = ENV['RAILS_ENV']
+    
+    config.databases = {
+      :users => {
+        :development => 'http://127.0.0.1:5984/users-development',
+        :test => 'http://127.0.0.1:5984/users-test',
+        :production => 'http://prod.server:5984/users'
+      },
+      :tweets => {
+        :development => 'http://127.0.0.1:5984/tweets-development',
+        :test => 'http://127.0.0.1:5984/tweets-test',
+        :production => 'http://prod.server:5984/tweets'
+      }
+    }
+  end
+  
   # Optionally:
-  # @cambric.create_all_databases
+  # Cambric.create_all_databases
 
 2) Interact with CouchRest::Database instances:
 
-  @tweets_db = @cambric[:tweets]
-  @tweets_db.save_doc :author => 'marbles',
-                      :message => 'Is this pork or beef, @Randy?',
-                      :followers => ['randy','zdzolton','trevorturk'],
-                      :created_at => Time.now
+  # Just like normal...
+  Cambric[:tweets].save_doc :author => 'marbles',
+                            :message => 'Is this pork or beef, @Randy?',
+                            :followers => ['randy','zdzolton','trevorturk'],
+                            :created_at => Time.now
 
-  @tweets_db.view 'by_follower_and_created_at', :limit => 1
+  # Except, you do NOT need to re-specify the design doc name when 
+  # calling CouchRest::Database#view —hooray!
+  Cambric[:tweets].view 'by_follower_and_created_at', :limit => 1
 
-3) Push view changes to CouchDB:
+3) Push view/design doc changes to CouchDB:
 
   $ ./script/console
-  irb> require 'require cambric.rb' # This needs to change when gem becomes available...! :^/
-  irb> @cambric = Cambric.new open('./config/cambric.yml'), 
-                         :environment => 'production', 
-                         :design_doc => 'twitter-clone'
-  irb> @cambric.push_all_design_docs
+  irb> require 'rubygems'
+  irb> gem 'zdzolton-cambric'
+  irb> require 'cambric'
+  irb> Cambric.configure do |config|
+         config.design_doc_name = 'twitter-clone'
+         config.environment = ENV['RAILS_ENV']
+     
+         config.databases = {
+           :users => {
+             :development => 'http://127.0.0.1:5984/users-development',
+             :test => 'http://127.0.0.1:5984/users-test',
+             :production => 'http://prod.server:5984/users'
+           },
+           :tweets => {
+             :development => 'http://127.0.0.1:5984/tweets-development',
+             :test => 'http://127.0.0.1:5984/tweets-test',
+             :production => 'http://prod.server:5984/tweets'
+           }
+         }
+       end
+  irb> Cambric.push_all_design_docs
 
 == Installation
 
@@ -39,27 +73,15 @@ Opinionated management and usage of CouchDB from your Ruby apps.
   $ sudo gem install jchris-couchapp jchris-couchrest zdzolton-cambric
 
 * Configure Rails:
-
-Coming soon...
-
-* create a couchdb directory within your project
-  $ cd /your/app/root
-  $ mkdir -p ./couchdb/your_db/views/some_view_name
+  * create a config/initializers/cambric.rb file as follows:
   
-* create a ./config/cambric.yml file
-  bar:
-    staging:
+    # coming soon...
 
-    somewhere:
-      host: some.where
+  * create a couchdb directory within your project
 
-  baz:
-    staging:
-
-    somewhere:
-      port: 5566
+    $ cd /your/app/root
+    $ mkdir -p ./couchdb/your_db/views/some_view_name
   
-
 == Copyright
 
 Copyright (c) 2009 Zachary Zolton. See LICENSE for details.
