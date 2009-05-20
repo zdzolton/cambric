@@ -30,6 +30,10 @@ describe Cambric do
     it "should default to 'development' for the environment" do
       @cambric.environment.should == 'development'
     end
+    
+    it "should not throw a fit when creating databases" do
+      @cambric.create_all_databases
+    end
   end
   
   describe "after instantiating with a block" do
@@ -54,29 +58,7 @@ describe Cambric do
       @cambric.environment.should == 'test'
     end    
   end
-  
-  # describe "after initializing" do
-  #   before :all do
-  #     @cambric = Cambric.new 'twitter-clone'
-  #   end
-  #   
-  #   it "should have the provided design doc name" do
-  #     @cambric.design_doc_name.should == 'twitter-clone'
-  #   end
-  #   
-  #   it "should default to './couchdb' for the database directory" do
-  #     @cambric.db_dir.should == './couchdb'
-  #   end
-  #   
-  #   it "should default to 'development' for the environment" do
-  #     @cambric.environment.should == 'development'
-  #   end
-  # end
-  # 
-  # it "should not throw a fit when creating without setting databases" do
-  #   Cambric.new('whatever').create_all_databases
-  # end
-  
+    
   # describe "after creating databases" do
   #   before :all do
   #     @cambric = Cambric.new 'twitter-clone'
@@ -114,5 +96,18 @@ describe Cambric::Configurator do
 
   it "should default to 'development' for the environment" do
     @config.environment.should == 'development'
-  end  
+  end
+  
+  describe "when retrieving the configured CouchRest::Database instances" do
+    before :all do
+      @config.databases = TWITTER_CLONE_DATABASES
+      @dbs = @config.initialize_databases
+    end
+    
+    it "should have the expected URLs for development environment" do
+      %w(users tweets).each do |db|
+        @dbs[db.to_sym].uri.should == "http://127.0.0.1:5984/#{db}-development"
+      end
+    end
+  end
 end
