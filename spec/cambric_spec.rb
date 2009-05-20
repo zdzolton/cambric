@@ -1,131 +1,114 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require 'uri'
 
+TWITTER_CLONE_DATABASES = {
+  :users => {
+    :development => 'http://127.0.0.1:5984/users-development',
+    :test => 'http://127.0.0.1:5984/users-test'
+  },
+  :tweets => {
+    :development => 'http://127.0.0.1:5984/tweets-development',
+    :test => 'http://127.0.0.1:5984/tweets-test'
+  }
+}
+
 describe Cambric do
-
-  describe "when initializing without the design document name" do
-    it "should raise an error" do
-      lambda do 
-        Cambric.new load_fixture('tweets.yml'), :environment => 'development' 
-      end.should raise_error
-    end
-  end
-
-  describe "when initializing for a non-specified environment" do
-    it "should raise an error" do
-      lambda do
-        Cambric.new load_fixture('degenerate.yml'), 
-                    :environment => 'staging', 
-                    :design_doc => 'blarg'
-      end.should raise_error
-    end
-  end
   
-  it "should assume ./couchdb as the database path" do
-    lambda do
-      @cambric = Cambric.new load_fixture('foo-bar-baz.yml'), 
-                             :environment => 'staging', 
-                             :design_doc => 'xop'
-
-      @cambric.push_all_design_docs
-    end.should raise_error
-  end
-
-  describe "after initializing with required information" do
-    
+  describe "after instantiating without a block" do
     before :all do
-      @cambric = Cambric.new load_fixture('twitter-clone.yml')
-      @cambric.environment = 'development'
-      @cambric.design_doc_name = 'twitter-clone'
-      @cambric.db_dir = File.join FIXTURES_PATH, 'twitter-clone'
-    end
-  
-    it "should have a value for the environment" do
-      @cambric.environment.should_not be_nil
-    end
-
-    it "should have something for config" do
-      @cambric.config.should_not be_nil
+      @cambric = Cambric.new
     end
     
-    it "should match the given design document name" do
+    it "should default its design doc name to 'cambric'" do
+      @cambric.design_doc_name.should == 'cambric'
+    end
+
+    it "should default to './couchdb' for the database directory" do
+      @cambric.db_dir.should == './couchdb'
+    end
+    
+    it "should default to 'development' for the environment" do
+      @cambric.environment.should == 'development'
+    end
+  end
+  
+  describe "after instantiating with a block" do
+    before :all do
+      @cambric = Cambric.new do |config|
+        config.design_doc_name = 'twitter-clone'
+        config.db_dir = '../to/some/path'
+        config.environment = 'test'
+        config.databases = TWITTER_CLONE_DATABASES
+      end
+    end
+    
+    it "should have the config object's value for the design doc name" do
       @cambric.design_doc_name.should == 'twitter-clone'
     end
     
-    it "should match the given database directory" do
-      @cambric.db_dir.should =~ /\/spec\/fixtures\/twitter-clone/
-    end
-
-    it "should contain a key for each database entry" do
-      %w(users tweets).each do |db|
-        @cambric.config.keys.should include(db)
-      end
-    end
-    
-    it "should hash-style access databases, by name, as string or symbol" do
-      %w(users tweets).each do |db_name|
-        [db_name, db_name.to_sym].each do |db|
-          @cambric[db].uri.should =~ /localhost:5984\/#{db}-development$/
-        end
-      end
-    end
-    
-    describe "after pushing up the databases" do
-      before :all do
-        @cambric.create_all_databases
-        @tweets_db = @cambric[:tweets]
-      end
-      
-      it "should access views with omitted design doc name" do
-        @tweets_db.save_doc :author => 'marbles',
-                            :message => 'Is this pork or beef, @Randy?',
-                            :followers => ['randy','zdzolton','trevorturk'],
-                            :created_at => Time.now
-
-        @tweets_db.view 'by_follower_and_created_at', :limit => 1
-      end
-    end
-    
-  end
-    
-  describe "when creating databases" do
-    before :all do
-      cambric = Cambric.new load_fixture('foo-bar-baz.yml')
-      cambric.environment = 'staging'
-      cambric.design_doc_name = 'xop'
-      cambric.db_dir = File.join FIXTURES_PATH, 'foo-bar-baz'
-      cambric.create_all_databases
-      @server = CouchRest.new("localhost:5984")
-    end
-    
-    it "should be able to access databases, with the environment name" do
-      %w(bar baz).each do |db|
-        @server.database("#{db}-staging").info.should_not be_nil
-      end
-    end
-    
-    it "should have pushed to each the specified design doc name" do
-      %w(bar baz).each do |db|
-        @server.database("#{db}-staging").get('_design/xop').should_not be_nil
-      end
-    end
+    it "should have the config object's value for the database directory" do
+      @cambric.db_dir.should == '../to/some/path'
+    end    
   end
   
-  describe "when the YAML specifies a host or port value" do
-    before :all do
-      @cambric = Cambric.new load_fixture('foo-bar-baz.yml')
-      @cambric.environment = 'somewhere'
-      @cambric.design_doc_name = 'xop'
-      @cambric.db_dir = File.join FIXTURES_PATH, 'foo-bar-baz'
-    end
-    
-    it "should reflect the host value in the database URI" do
-      URI.parse(@cambric[:bar].uri).host.should == 'some.where'
-    end
-    
-    it "should reflect the port value in the database URI" do
-      URI.parse(@cambric[:baz].uri).port.should == 5566
-    end
+  # describe "after initializing" do
+  #   before :all do
+  #     @cambric = Cambric.new 'twitter-clone'
+  #   end
+  #   
+  #   it "should have the provided design doc name" do
+  #     @cambric.design_doc_name.should == 'twitter-clone'
+  #   end
+  #   
+  #   it "should default to './couchdb' for the database directory" do
+  #     @cambric.db_dir.should == './couchdb'
+  #   end
+  #   
+  #   it "should default to 'development' for the environment" do
+  #     @cambric.environment.should == 'development'
+  #   end
+  # end
+  # 
+  # it "should not throw a fit when creating without setting databases" do
+  #   Cambric.new('whatever').create_all_databases
+  # end
+  
+  # describe "after creating databases" do
+  #   before :all do
+  #     @cambric = Cambric.new 'twitter-clone'
+  #     @cambric.databases = TWITTER_CLONE_DATABASES
+  #     @cambric.create_all_databases
+  #   end
+  #   
+  #   it "should be able to query the expected databases" do
+  #     %w(users tweets).each do |db|
+  #       @cambric[db].info.should_not be_nil
+  #     end
+  #   end
+  #   
+  #   it "should have the expected URLs for the expected databases" do
+  #     %w(users tweets).each do |db|
+  #       @cambric[db].uri.should == "http://127.0.0.1:5984/#{db}-development"
+  #     end
+  #   end
+  # end
+
+end
+
+describe Cambric::Configurator do
+  before :all do
+    @config = Cambric::Configurator.new
   end
 
+  it "should default its design doc name to 'cambric'" do
+    @config.design_doc_name.should == 'cambric'
+  end
+
+  it "should default to './couchdb' for the database directory" do
+    @config.db_dir.should == './couchdb'
+  end
+
+  it "should default to 'development' for the environment" do
+    @config.environment.should == 'development'
+  end  
 end
