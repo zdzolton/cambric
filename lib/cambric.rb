@@ -70,19 +70,19 @@ private
   def initialize_database uri
     server = CouchRest.new("#{uri.scheme}://#{uri.host}:#{uri.port}")
     database = server.database uri.path.gsub(/^\//, '')
-    # database.extend AssumeDesignDocName
-    # database.design_doc_name = @design_doc_name
+    database.extend ::Cambric::AssumeDesignDocName
+    database.design_doc_name = @design_doc_name
     database
   end
   
 end
 
-# module Cambric::AssumeDesignDocName
-# 
-#   attr_accessor :design_doc_name
-#   
-#   def view name, options={}, &block
-#     super "#{@design_doc_name}/#{name}", options, &block
-#   end
-#   
-# end
+module Cambric::AssumeDesignDocName
+
+  attr_accessor :design_doc_name
+  
+  def view name, options={}, &block
+    super "#{@design_doc_name}/#{name}", options, &block
+  end
+  
+end

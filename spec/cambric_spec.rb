@@ -91,6 +91,15 @@ describe Cambric do
         @cambric[db].get("_design/twitter-clone").should_not be_nil
       end
     end
+    
+    it "should have defined views for design doc" do
+      design_doc = @cambric[:tweets].get("_design/twitter-clone")
+      design_doc['views']['by_follower_and_created_at'].should_not be_nil
+    end
+    
+    it "should be able to query view without re-specifying design doc name" do
+      @cambric[:tweets].view 'by_follower_and_created_at'
+    end
   end
 
 end
