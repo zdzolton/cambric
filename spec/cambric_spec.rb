@@ -49,6 +49,10 @@ describe Cambric do
     it "should have the config object's value for the database directory" do
       @cambric.db_dir.should == '../to/some/path'
     end    
+    
+    it "should have the config object's value for the environment" do
+      @cambric.environment.should == 'test'
+    end    
   end
   
   # describe "after initializing" do
