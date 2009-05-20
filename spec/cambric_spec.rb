@@ -59,25 +59,29 @@ describe Cambric do
     end    
   end
     
-  # describe "after creating databases" do
-  #   before :all do
-  #     @cambric = Cambric.new 'twitter-clone'
-  #     @cambric.databases = TWITTER_CLONE_DATABASES
-  #     @cambric.create_all_databases
-  #   end
-  #   
-  #   it "should be able to query the expected databases" do
-  #     %w(users tweets).each do |db|
-  #       @cambric[db].info.should_not be_nil
-  #     end
-  #   end
-  #   
-  #   it "should have the expected URLs for the expected databases" do
-  #     %w(users tweets).each do |db|
-  #       @cambric[db].uri.should == "http://127.0.0.1:5984/#{db}-development"
-  #     end
-  #   end
-  # end
+  describe "after creating databases" do
+    before :all do
+      @cambric = Cambric.new do |config|
+        config.design_doc_name = 'twitter-clone'
+        config.db_dir = './spec/fixtures/twitter-clone'
+        config.environment = 'test'
+        config.databases = TWITTER_CLONE_DATABASES
+      end
+      @cambric.create_all_databases
+    end
+    
+    it "should be able to query the expected databases" do
+      %w(users tweets).each do |db|
+        @cambric[db].info.should_not be_nil
+      end
+    end
+    
+    it "should have the expected URLs for the expected databases" do
+      %w(users tweets).each do |db|
+        @cambric[db].uri.should == "http://127.0.0.1:5984/#{db}-test"
+      end
+    end
+  end
 
 end
 

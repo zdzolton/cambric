@@ -8,12 +8,25 @@ class Cambric
   def initialize
     config = Configurator.new
     yield config if block_given?
+    @databases = config.initialize_databases
     @design_doc_name = config.design_doc_name
     @db_dir = config.db_dir
     @environment = config.environment
   end
   
   def create_all_databases
+    @databases.each_pair do |name,db|
+      name_with_env = "#{name}-#{@environment}"
+      begin
+        db.server.create_db name_with_env
+      rescue
+        db.server.database(name_with_env).recreate!
+      end
+    end
+  end
+  
+  def [](database)
+    @databases[database.to_sym]
   end
   
 end
