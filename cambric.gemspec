@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cambric}
-  s.version = "0.3.1"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Zachary Zolton", "Geoff Buesing"]
-  s.date = %q{2009-05-18}
+  s.date = %q{2009-05-20}
   s.email = %q{zachary.zolton@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -23,8 +23,6 @@ Gem::Specification.new do |s|
      "lib/cambric.rb",
      "spec/cambric_spec.rb",
      "spec/fixtures/degenerate.yml",
-     "spec/fixtures/foo-bar-baz.yml",
-     "spec/fixtures/twitter-clone.yml",
      "spec/fixtures/twitter-clone/tweets/views/by_follower_and_created_at/map.js",
      "spec/spec_helper.rb"
   ]
