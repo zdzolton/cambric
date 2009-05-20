@@ -70,15 +70,25 @@ describe Cambric do
       @cambric.create_all_databases
     end
     
-    it "should be able to query the expected databases" do
+    after :all do
+      %w(users tweets).each{ |db| @cambric[db].delete! }
+    end
+    
+    it "should be able to query database info" do
       %w(users tweets).each do |db|
         @cambric[db].info.should_not be_nil
       end
     end
     
-    it "should have the expected URLs for the expected databases" do
+    it "should have the expected URLs" do
       %w(users tweets).each do |db|
         @cambric[db].uri.should == "http://127.0.0.1:5984/#{db}-test"
+      end
+    end
+    
+    it "should have the expected design doc" do
+      %w(users tweets).each do |db|
+        @cambric[db].get("_design/twitter-clone").should_not be_nil
       end
     end
   end

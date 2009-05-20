@@ -23,12 +23,25 @@ class Cambric
         db.server.database(name_with_env).recreate!
       end
     end
+    push_all_design_docs
   end
   
   def [](database)
     @databases[database.to_sym]
   end
   
+  def push_all_design_docs
+    @databases.keys.each{ |db| push_design_doc_for db.to_s }
+  end
+   
+private
+
+  def push_design_doc_for database
+    design_doc_path = File.join @db_dir, database
+    raise "Database directory #{design_doc_path} does not exist!" unless File.exist?(design_doc_path)
+    `couchapp push #{design_doc_path} #{@design_doc_name} #{self[database].uri}`
+  end
+    
 end
 
 class Cambric::Configurator
