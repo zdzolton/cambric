@@ -1,11 +1,21 @@
 require 'couchrest'
 require 'uri'
 
-class Cambric
+module Cambric
   
-  attr_reader :design_doc_name, :db_dir, :environment
+  def self.design_doc_name
+    @design_doc_name
+  end
   
-  def initialize
+  def self.db_dir
+    @db_dir
+  end
+  
+  def self.environment
+    @environment
+  end
+  
+  def self.configure
     config = Configurator.new
     yield config if block_given?
     @databases = config.initialize_databases
@@ -14,7 +24,7 @@ class Cambric
     @environment = config.environment
   end
   
-  def create_all_databases
+  def self.create_all_databases
     @databases.each_pair do |name,db|
       name_with_env = "#{name}-#{@environment}"
       begin
@@ -26,17 +36,17 @@ class Cambric
     push_all_design_docs
   end
   
-  def [](database)
+  def self.[](database)
     @databases[database.to_sym]
   end
   
-  def push_all_design_docs
+  def self.push_all_design_docs
     @databases.keys.each{ |db| push_design_doc_for db.to_s }
   end
    
 private
 
-  def push_design_doc_for database
+  def self.push_design_doc_for database
     design_doc_path = File.join @db_dir, database
     raise "Database directory #{design_doc_path} does not exist!" unless File.exist?(design_doc_path)
     `couchapp push #{design_doc_path} #{@design_doc_name} #{self[database].uri}`
@@ -71,7 +81,7 @@ private
     server = CouchRest.new("#{uri.scheme}://#{uri.host}:#{uri.port}")
     database = server.database uri.path.gsub(/^\//, '')
     database.extend ::Cambric::AssumeDesignDocName
-    database.design_doc_name = @design_doc_name
+    database.cambric_design_doc_name = @design_doc_name
     database
   end
   
@@ -79,10 +89,10 @@ end
 
 module Cambric::AssumeDesignDocName
 
-  attr_accessor :design_doc_name
+  attr_accessor :cambric_design_doc_name
   
   def view name, options={}, &block
-    super "#{@design_doc_name}/#{name}", options, &block
+    super "#{@cambric_design_doc_name}/#{name}", options, &block
   end
   
 end
