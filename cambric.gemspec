@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
      "cambric.gemspec",
      "lib/cambric.rb",
      "spec/cambric_spec.rb",
-     "spec/fixtures/degenerate.yml",
      "spec/fixtures/twitter-clone/tweets/views/by_follower_and_created_at/map.js",
      "spec/spec_helper.rb"
   ]
