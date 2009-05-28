@@ -40,7 +40,7 @@ describe Cambric do
     before :all do
       Cambric.configure do |config|
         config.design_doc_name = 'twitter-clone'
-        config.db_dir = './spec/fixtures/twitter-clone'
+        config.db_dir = 'does/not/exist'
         config.environment = 'test'
         config.databases = TWITTER_CLONE_DATABASES
       end
@@ -51,11 +51,15 @@ describe Cambric do
     end
     
     it "should have the config object's value for the database directory" do
-      Cambric.db_dir.should == './spec/fixtures/twitter-clone'
+      Cambric.db_dir.should == 'does/not/exist'
     end    
     
     it "should have the config object's value for the environment" do
       Cambric.environment.should == 'test'
+    end
+    
+    it "should not blow up when calling push_design_docs for non-existent directories" do
+      Cambric.push_design_docs
     end
   end
     
@@ -63,7 +67,7 @@ describe Cambric do
     before :all do
       Cambric.configure do |config|
         config.design_doc_name = 'twitter-clone'
-        config.db_dir = './spec/fixtures/twitter-clone'
+        config.db_dir = 'spec/fixtures/twitter-clone'
         config.environment = 'test'
         config.databases = TWITTER_CLONE_DATABASES
       end

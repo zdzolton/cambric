@@ -55,8 +55,9 @@ private
 
   def self.push_design_doc_for database
     design_doc_path = File.join @db_dir, database
-    raise "Database directory #{design_doc_path} does not exist!" unless File.exist?(design_doc_path)
-    `couchapp push #{design_doc_path} #{@design_doc_name} #{self[database].uri}`
+    if File.exist?(design_doc_path)
+      `couchapp push #{design_doc_path} #{@design_doc_name} #{self[database].uri}`
+    end
   end
     
 end
