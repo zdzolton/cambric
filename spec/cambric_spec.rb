@@ -108,6 +108,18 @@ describe Cambric do
           Cambric[:tweets].get('test')['foo'].should == 'bar'
         end
       end
+      
+      describe "after calling create_all_databases!" do
+        before :all do
+          Cambric.create_all_databases!
+        end
+        
+        it "should overwrite the database" do
+          lambda do
+            Cambric[:tweets].get('test')
+          end.should raise_error(RestClient::ResourceNotFound)
+        end
+      end
     end
     
     describe "after pushing design docs" do

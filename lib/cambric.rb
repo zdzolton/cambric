@@ -24,15 +24,15 @@ module Cambric
     @environment = config.environment
   end
   
-  # def self.create_all_databases!
-  #   @databases.each_pair do |name,db|
-  #     begin
-  #       db.server.create_db db.name
-  #     rescue
-  #       db.server.database(db.name).recreate!
-  #     end
-  #   end
-  # end
+  def self.create_all_databases!
+    @databases.each_pair do |name,db|
+      begin
+        db.server.create_db db.name
+      rescue
+        db.server.database(db.name).recreate!
+      end
+    end
+  end
   
   def self.create_all_databases
     @databases.each_pair do |name,db|
