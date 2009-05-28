@@ -32,7 +32,6 @@ module Cambric
         db.server.database(db.name).recreate!
       end
     end
-    push_all_design_docs
   end
   
   def self.[](database)

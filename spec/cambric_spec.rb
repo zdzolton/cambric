@@ -86,19 +86,27 @@ describe Cambric do
       end
     end
     
-    it "should have the expected design doc" do
+    it "should have not yet pushed the design docs" do
       %w(users tweets).each do |db|
-        Cambric[db].get("_design/twitter-clone").should_not be_nil
+        lambda do
+          Cambric[db].get("_design/twitter-clone")
+        end.should raise_error(RestClient::ResourceNotFound)
       end
     end
     
-    it "should have defined views for design doc" do
-      design_doc = Cambric[:tweets].get("_design/twitter-clone")
-      design_doc['views']['by_follower_and_created_at'].should_not be_nil
-    end
+    describe "after pushing design docs" do
+      before :all do
+        Cambric.push_all_design_docs
+      end
+      
+      it "should have defined views for design doc" do
+        design_doc = Cambric[:tweets].get("_design/twitter-clone")
+        design_doc['views']['by_follower_and_created_at'].should_not be_nil
+      end
     
-    it "should be able to query view without re-specifying design doc name" do
-      Cambric[:tweets].view 'by_follower_and_created_at'
+      it "should be able to query view without re-specifying design doc name" do
+        Cambric[:tweets].view 'by_follower_and_created_at'
+      end
     end
   end
 
