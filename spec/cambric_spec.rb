@@ -32,7 +32,7 @@ describe Cambric do
     end
     
     it "should not throw a fit when creating databases" do
-      Cambric.create_all_databases
+      Cambric.create_databases
     end
   end
   
@@ -67,7 +67,7 @@ describe Cambric do
         config.environment = 'test'
         config.databases = TWITTER_CLONE_DATABASES
       end
-      Cambric.create_all_databases
+      Cambric.create_databases
     end
     
     after :all do
@@ -99,13 +99,13 @@ describe Cambric do
         Cambric[:tweets].save_doc '_id' => 'test', 'foo' => 'bar'
       end
       
-      it "should not overwrite the database after calling create_all_databases" do
-        Cambric.create_all_databases
+      it "should not overwrite the database after calling create_databases" do
+        Cambric.create_databases
         Cambric[:tweets].get('test')['foo'].should == 'bar'
       end
       
-      it "should overwrite the database after calling create_all_databases!" do
-        Cambric.create_all_databases!
+      it "should overwrite the database after calling create_databases!" do
+        Cambric.create_databases!
         lambda do
           Cambric[:tweets].get('test')
         end.should raise_error(RestClient::ResourceNotFound)
@@ -114,7 +114,7 @@ describe Cambric do
     
     describe "after pushing design docs" do
       before :all do
-        Cambric.push_all_design_docs
+        Cambric.push_design_docs
       end
       
       it "should have defined views for design doc" do

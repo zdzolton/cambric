@@ -27,7 +27,7 @@ Opinionated management and usage of CouchDB from your Ruby apps.
   end
   
   # Optionally:
-  # Cambric.create_all_databases
+  # Cambric.create_databases
 
 2) Interact with CouchRest::Database instances:
 
@@ -64,7 +64,7 @@ Opinionated management and usage of CouchDB from your Ruby apps.
            }
          }
        end
-  irb> Cambric.push_all_design_docs
+  irb> Cambric.push_design_docs
 
 == Installation
 
