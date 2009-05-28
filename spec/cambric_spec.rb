@@ -23,8 +23,8 @@ describe Cambric do
       Cambric.design_doc_name.should == 'cambric'
     end
 
-    it "should default to './couchdb' for the database directory" do
-      Cambric.db_dir.should == './couchdb'
+    it "should default to 'cambric' for the database directory" do
+      Cambric.db_dir.should == 'cambric'
     end
     
     it "should default to 'development' for the environment" do
@@ -140,8 +140,8 @@ describe Cambric::Configurator do
     @config.design_doc_name.should == 'cambric'
   end
 
-  it "should default to './couchdb' for the database directory" do
-    @config.db_dir.should == './couchdb'
+  it "should default to 'cambric' for the database directory" do
+    @config.db_dir.should == 'cambric'
   end
 
   it "should default to 'development' for the environment" do

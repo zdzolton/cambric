@@ -67,7 +67,7 @@ class Cambric::Configurator
   
   def initialize
     @design_doc_name = 'cambric'
-    @db_dir = './couchdb'
+    @db_dir = 'cambric'
     @environment = 'development'
     @databases = {}
   end
