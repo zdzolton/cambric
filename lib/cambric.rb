@@ -24,13 +24,19 @@ module Cambric
     @environment = config.environment
   end
   
+  # def self.create_all_databases!
+  #   @databases.each_pair do |name,db|
+  #     begin
+  #       db.server.create_db db.name
+  #     rescue
+  #       db.server.database(db.name).recreate!
+  #     end
+  #   end
+  # end
+  
   def self.create_all_databases
     @databases.each_pair do |name,db|
-      begin
-        db.server.create_db db.name
-      rescue
-        db.server.database(db.name).recreate!
-      end
+      db.server.create_db db.name rescue nil
     end
   end
   
@@ -41,6 +47,11 @@ module Cambric
   def self.push_all_design_docs
     @databases.keys.each{ |db| push_design_doc_for db.to_s }
   end
+  
+  # def self.prepare_databases
+  #   create_all_databases
+  #   push_all_design_docs
+  # end
    
 private
 

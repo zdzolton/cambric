@@ -40,7 +40,7 @@ describe Cambric do
     before :all do
       Cambric.configure do |config|
         config.design_doc_name = 'twitter-clone'
-        config.db_dir = '../to/some/path'
+        config.db_dir = './spec/fixtures/twitter-clone'
         config.environment = 'test'
         config.databases = TWITTER_CLONE_DATABASES
       end
@@ -51,12 +51,12 @@ describe Cambric do
     end
     
     it "should have the config object's value for the database directory" do
-      Cambric.db_dir.should == '../to/some/path'
+      Cambric.db_dir.should == './spec/fixtures/twitter-clone'
     end    
     
     it "should have the config object's value for the environment" do
       Cambric.environment.should == 'test'
-    end    
+    end
   end
     
   describe "after creating databases" do
@@ -91,6 +91,22 @@ describe Cambric do
         lambda do
           Cambric[db].get("_design/twitter-clone")
         end.should raise_error(RestClient::ResourceNotFound)
+      end
+    end
+    
+    describe "after pushing a test doc" do
+      before :all do
+        Cambric[:tweets].save_doc '_id' => 'test', 'foo' => 'bar'
+      end
+      
+      describe "after calling create_all_databases" do
+        before :all do
+          Cambric.create_all_databases
+        end
+        
+        it "should not overwrite the database" do
+          Cambric[:tweets].get('test')['foo'].should == 'bar'
+        end
       end
     end
     
