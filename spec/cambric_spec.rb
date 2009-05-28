@@ -96,18 +96,19 @@ describe Cambric do
     
     describe "after pushing a test doc" do
       before :all do
-        Cambric[:tweets].save_doc '_id' => 'test', 'foo' => 'bar'
+        @test_doc = { 'foo' => 'bar' }
+        Cambric[:tweets].save_doc @test_doc
       end
       
       it "should not overwrite the database after calling create_databases" do
         Cambric.create_databases
-        Cambric[:tweets].get('test')['foo'].should == 'bar'
+        Cambric[:tweets].get(@test_doc['_id'])['foo'].should == 'bar'
       end
       
       it "should overwrite the database after calling create_databases!" do
         Cambric.create_databases!
         lambda do
-          Cambric[:tweets].get('test')
+          Cambric[:tweets].get(@test_doc['_id'])
         end.should raise_error(RestClient::ResourceNotFound)
       end
     end
