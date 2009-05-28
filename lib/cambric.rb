@@ -26,11 +26,10 @@ module Cambric
   
   def self.create_all_databases
     @databases.each_pair do |name,db|
-      name_with_env = "#{name}-#{@environment}"
       begin
-        db.server.create_db name_with_env
+        db.server.create_db db.name
       rescue
-        db.server.database(name_with_env).recreate!
+        db.server.database(db.name).recreate!
       end
     end
     push_all_design_docs

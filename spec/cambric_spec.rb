@@ -4,11 +4,11 @@ require 'uri'
 TWITTER_CLONE_DATABASES = {
   :users => {
     :development => 'http://127.0.0.1:5984/users-development',
-    :test => 'http://127.0.0.1:5984/users-test'
+    :test => 'http://127.0.0.1:5984/users-testing'
   },
   :tweets => {
     :development => 'http://127.0.0.1:5984/tweets-development',
-    :test => 'http://127.0.0.1:5984/tweets-test'
+    :test => 'http://127.0.0.1:5984/tweets-testing'
   }
 }
 
@@ -82,7 +82,7 @@ describe Cambric do
     
     it "should have the expected URLs" do
       %w(users tweets).each do |db|
-        Cambric[db].uri.should == "http://127.0.0.1:5984/#{db}-test"
+        Cambric[db].uri.should == "http://127.0.0.1:5984/#{db}-testing"
       end
     end
     
