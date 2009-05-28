@@ -99,26 +99,16 @@ describe Cambric do
         Cambric[:tweets].save_doc '_id' => 'test', 'foo' => 'bar'
       end
       
-      describe "after calling create_all_databases" do
-        before :all do
-          Cambric.create_all_databases
-        end
-        
-        it "should not overwrite the database" do
-          Cambric[:tweets].get('test')['foo'].should == 'bar'
-        end
+      it "should not overwrite the database after calling create_all_databases" do
+        Cambric.create_all_databases
+        Cambric[:tweets].get('test')['foo'].should == 'bar'
       end
       
-      describe "after calling create_all_databases!" do
-        before :all do
-          Cambric.create_all_databases!
-        end
-        
-        it "should overwrite the database" do
-          lambda do
-            Cambric[:tweets].get('test')
-          end.should raise_error(RestClient::ResourceNotFound)
-        end
+      it "should overwrite the database after calling create_all_databases!" do
+        Cambric.create_all_databases!
+        lambda do
+          Cambric[:tweets].get('test')
+        end.should raise_error(RestClient::ResourceNotFound)
       end
     end
     

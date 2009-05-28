@@ -35,9 +35,7 @@ module Cambric
   end
   
   def self.create_all_databases
-    @databases.each_pair do |name,db|
-      db.server.create_db db.name rescue nil
-    end
+    @databases.each_pair{ |name,db| db.server.create_db db.name rescue nil }
   end
   
   def self.[](database)
