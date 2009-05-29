@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cambric}
-  s.version = "0.4.0"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Zachary Zolton", "Geoff Buesing"]
-  s.date = %q{2009-05-20}
+  s.date = %q{2009-05-29}
   s.email = %q{zachary.zolton@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -23,13 +23,13 @@ Gem::Specification.new do |s|
      "lib/cambric.rb",
      "spec/cambric_spec.rb",
      "spec/fixtures/twitter-clone/tweets/views/by_follower_and_created_at/map.js",
+     "spec/spec.opts",
      "spec/spec_helper.rb"
   ]
-  s.has_rdoc = true
   s.homepage = %q{http://github.com/zdzolton/cambric}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.1}
+  s.rubygems_version = %q{1.3.3}
   s.summary = %q{Opinionated management and usage of CouchDB from your Ruby apps.}
   s.test_files = [
     "spec/cambric_spec.rb",
@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 2
+    s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<jchris-couchrest>, [">= 0"])
