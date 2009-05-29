@@ -12,6 +12,19 @@ TWITTER_CLONE_DATABASES = {
   }
 }
 
+def configure_twitter_clone
+  Cambric.configure do |config|
+    config.design_doc_name = 'twitter-clone'
+    config.db_dir = 'spec/fixtures/twitter-clone'
+    config.environment = 'test'
+    config.databases = TWITTER_CLONE_DATABASES
+  end
+end
+
+def delete_twitter_clone_databases
+  %w(users tweets).each{ |db| Cambric[db].delete! }
+end
+
 describe Cambric do
   
   describe "after configuring without a block" do
@@ -65,18 +78,11 @@ describe Cambric do
     
   describe "after creating databases" do
     before :all do
-      Cambric.configure do |config|
-        config.design_doc_name = 'twitter-clone'
-        config.db_dir = 'spec/fixtures/twitter-clone'
-        config.environment = 'test'
-        config.databases = TWITTER_CLONE_DATABASES
-      end
+      configure_twitter_clone
       Cambric.create_databases
     end
     
-    after :all do
-      %w(users tweets).each{ |db| Cambric[db].delete! }
-    end
+    after(:all){ delete_twitter_clone_databases }
     
     it "should be able to query database info" do
       %w(users tweets).each do |db|
@@ -97,41 +103,50 @@ describe Cambric do
         end.should raise_error(RestClient::ResourceNotFound)
       end
     end
-    
-    describe "after pushing a test doc" do
-      before :all do
-        @test_doc = { 'foo' => 'bar' }
-        Cambric[:tweets].save_doc @test_doc
-      end
-      
-      it "should not overwrite the database after calling create_databases" do
-        Cambric.create_databases
-        Cambric[:tweets].get(@test_doc['_id'])['foo'].should == 'bar'
-      end
-      
-      it "should overwrite the database after calling create_databases!" do
-        Cambric.create_databases!
-        lambda do
-          Cambric[:tweets].get(@test_doc['_id'])
-        end.should raise_error(RestClient::ResourceNotFound)
-      end
+  end
+  
+  describe "after pushing a test doc" do
+    before :all do
+      configure_twitter_clone
+      Cambric.create_databases
+      @test_doc = { 'foo' => 'bar' }
+      Cambric[:tweets].save_doc @test_doc
     end
     
-    describe "after pushing design docs" do
-      before :all do
-        Cambric.push_design_docs
-      end
-      
-      it "should have defined views for design doc" do
-        design_doc = Cambric[:tweets].get("_design/twitter-clone")
-        design_doc['views']['by_follower_and_created_at'].should_not be_nil
-      end
+    after(:all){ delete_twitter_clone_databases }
     
-      it "should be able to query view without re-specifying design doc name" do
-        Cambric[:tweets].view 'by_follower_and_created_at'
-      end
+    it "should not overwrite the database after calling create_databases" do
+      Cambric.create_databases
+      Cambric[:tweets].get(@test_doc['_id'])['foo'].should == 'bar'
+    end
+    
+    it "should overwrite the database after calling create_databases!" do
+      Cambric.create_databases!
+      lambda do
+        Cambric[:tweets].get(@test_doc['_id'])
+      end.should raise_error(RestClient::ResourceNotFound)
     end
   end
+  
+  describe "after pushing design docs" do
+    before :all do
+      configure_twitter_clone
+      Cambric.create_databases
+      Cambric.push_design_docs
+    end
+    
+    after(:all){ delete_twitter_clone_databases }
+    
+    it "should have defined views for design doc" do
+      design_doc = Cambric[:tweets].get("_design/twitter-clone")
+      design_doc['views']['by_follower_and_created_at'].should_not be_nil
+    end
+  
+    it "should be able to query view without re-specifying design doc name" do
+      Cambric[:tweets].view 'by_follower_and_created_at'
+    end
+  end
+  
 
 end
 
