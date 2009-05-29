@@ -147,6 +147,22 @@ describe Cambric do
     end
   end
   
+  describe "when the design doc already exists" do
+    before :all do
+      configure_twitter_clone
+      Cambric.create_databases
+      @design_doc = { '_id' => '_design/twitter-clone', 'foo' => 'bar' }
+      Cambric[:tweets].save_doc @design_doc
+    end
+    
+    after(:all){ delete_twitter_clone_databases }
+    
+    it "should overwrite when pushing design docs" do
+      Cambric.push_design_docs
+      Cambric[:tweets].get("_design/twitter-clone")['_rev'].should_not == @design_doc['_rev']
+    end
+  end
+  
   describe "after calling prepare_databases" do
     before :all do
       configure_twitter_clone
