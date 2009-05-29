@@ -182,6 +182,23 @@ describe Cambric do
         Cambric[db].get('_design/twitter-clone').should_not be_nil
       end
     end
+    
+    describe "calling prepare_databases again" do
+      before :all do
+        @test_doc = { 'foo' => 'bar' }
+        Cambric[:tweets].save_doc @test_doc
+        @design_doc_rev = Cambric[:tweets].get('_design/twitter-clone')['_rev']
+        Cambric.prepare_databases
+      end
+      
+      it "should not have re-created the database" do
+        Cambric[:tweets].get(@test_doc['_id'])['foo'].should == 'bar'
+      end
+      
+      it "should have updated the design doc" do
+        Cambric[:tweets].get('_design/twitter-clone')['_rev'].should_not == @design_doc_rev
+      end
+    end
   end
 
 end
