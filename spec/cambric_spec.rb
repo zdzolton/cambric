@@ -22,7 +22,7 @@ def configure_twitter_clone
 end
 
 def delete_twitter_clone_databases
-  %w(users tweets).each{ |db| Cambric[db].delete! }
+  %w(users tweets).each{ |db| Cambric[db].delete! rescue nil }
 end
 
 describe Cambric do
@@ -147,6 +147,26 @@ describe Cambric do
     end
   end
   
+  describe "after calling prepare_databases" do
+    before :all do
+      configure_twitter_clone
+      Cambric.prepare_databases
+    end
+    
+    after(:all){ delete_twitter_clone_databases }
+    
+    it "should have created both databases" do
+      %w(users tweets).each do |db|
+        Cambric[db].info.should_not be_nil
+      end
+    end
+    
+    it "should have pushed the design doc to both databases" do
+      %w(users tweets).each do |db|
+        Cambric[db].get('_design/twitter-clone').should_not be_nil
+      end
+    end
+  end
 
 end
 

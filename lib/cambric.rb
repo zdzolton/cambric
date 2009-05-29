@@ -46,10 +46,10 @@ module Cambric
     @databases.keys.each{ |db| push_design_doc_for db.to_s }
   end
   
-  # def self.prepare_databases
-  #   create_databases
-  #   push_design_docs
-  # end
+  def self.prepare_databases
+    create_databases
+    push_design_docs
+  end
    
 private
 
