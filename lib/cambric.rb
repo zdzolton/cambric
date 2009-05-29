@@ -50,6 +50,11 @@ module Cambric
     create_databases
     push_design_docs
   end
+  
+  def self.prepare_databases!
+    create_databases!
+    push_design_docs
+  end
    
 private
 

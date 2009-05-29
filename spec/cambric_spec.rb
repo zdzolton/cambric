@@ -185,19 +185,28 @@ describe Cambric do
     
     describe "calling prepare_databases again" do
       before :all do
-        @test_doc = { 'foo' => 'bar' }
+        @test_doc = { 'eye' => 'ball' }
         Cambric[:tweets].save_doc @test_doc
         @design_doc_rev = Cambric[:tweets].get('_design/twitter-clone')['_rev']
         Cambric.prepare_databases
       end
       
       it "should not have re-created the database" do
-        Cambric[:tweets].get(@test_doc['_id'])['foo'].should == 'bar'
+        Cambric[:tweets].get(@test_doc['_id'])['eye'].should == 'ball'
       end
       
       it "should have updated the design doc" do
         Cambric[:tweets].get('_design/twitter-clone')['_rev'].should_not == @design_doc_rev
       end
+    end
+    
+    it "should re-create the database after calling prepare_databases!" do
+      test_doc = { 'bar' => 'bell' }
+      Cambric[:tweets].save_doc test_doc
+      Cambric.prepare_databases!
+      lambda do
+        Cambric[:tweets].get(test_doc['_id'])
+      end.should raise_error(RestClient::ResourceNotFound)
     end
   end
 
