@@ -19,14 +19,7 @@ describe Cambric::Configurator do
   
   describe "when retrieving the configured CouchRest::Database instances" do
     before :all do
-      @config.databases = {
-        :users => {
-          :development => 'http://127.0.0.1:5984/users-development'
-        },
-        :tweets => {
-          :development => 'http://127.0.0.1:5984/tweets-development'
-        }
-      }
+      @config.databases = TWITTER_CLONE_DATABASES
       @dbs = @config.initialize_databases
     end
     

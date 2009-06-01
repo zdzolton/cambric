@@ -1,30 +1,6 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '../spec_helper'))
 require 'uri'
 
-TWITTER_CLONE_DATABASES = {
-  :users => {
-    :development => 'http://127.0.0.1:5984/users-development',
-    :test => 'http://127.0.0.1:5984/users-testing'
-  },
-  :tweets => {
-    :development => 'http://127.0.0.1:5984/tweets-development',
-    :test => 'http://127.0.0.1:5984/tweets-testing'
-  }
-}
-
-def configure_twitter_clone
-  Cambric.configure do |config|
-    config.design_doc_name = 'twitter-clone'
-    config.db_dir = 'spec/fixtures/twitter-clone'
-    config.environment = 'test'
-    config.databases = TWITTER_CLONE_DATABASES
-  end
-end
-
-def delete_twitter_clone_databases
-  %w(users tweets).each{ |db| Cambric[db].delete! rescue nil }
-end
-
 describe Cambric do
   
   describe "after configuring without a block" do
@@ -140,10 +116,6 @@ describe Cambric do
     it "should have defined views for design doc" do
       design_doc = Cambric[:tweets].get("_design/twitter-clone")
       design_doc['views']['by_follower_and_created_at'].should_not be_nil
-    end
-  
-    it "should be able to query view without re-specifying design doc name" do
-      Cambric[:tweets].view 'by_follower_and_created_at'
     end
   end
   
