@@ -13,6 +13,10 @@ describe Cambric::AssumeDesignDocName do
     it "should be able to query view without re-specifying design doc name" do
       Cambric[:tweets].view 'by_follower_and_created_at'
     end
+    
+    it "should get the design doc specified by configuration" do
+      Cambric[:tweets].cambric_design_doc.should_not be_nil
+    end
   end
   
 end
