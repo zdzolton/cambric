@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cambric}
-  s.version = "0.5.0"
+  s.version = "0.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Zachary Zolton", "Geoff Buesing"]
-  s.date = %q{2009-05-29}
+  s.date = %q{2009-06-02}
   s.email = %q{zachary.zolton@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -21,8 +21,18 @@ Gem::Specification.new do |s|
      "VERSION",
      "cambric.gemspec",
      "lib/cambric.rb",
-     "spec/cambric_spec.rb",
+     "lib/cambric/assume_design_doc_name.rb",
+     "lib/cambric/configurator.rb",
+     "lib/cambric/test_helpers.rb",
+     "spec/cambric/assume_design_doc_name_spec.rb",
+     "spec/cambric/cambric_spec.rb",
+     "spec/cambric/configurator_spec.rb",
+     "spec/cambric/test_helpers_spec.rb",
      "spec/fixtures/twitter-clone/tweets/views/by_follower_and_created_at/map.js",
+     "spec/fixtures/twitter-clone/users/views/bad/map.js",
+     "spec/fixtures/twitter-clone/users/views/bad/reduce.js",
+     "spec/fixtures/twitter-clone/users/views/followers/map.js",
+     "spec/fixtures/twitter-clone/users/views/followers/reduce.js",
      "spec/spec.opts",
      "spec/spec_helper.rb"
   ]
@@ -32,7 +42,10 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.3}
   s.summary = %q{Opinionated management and usage of CouchDB from your Ruby apps.}
   s.test_files = [
-    "spec/cambric_spec.rb",
+    "spec/cambric/assume_design_doc_name_spec.rb",
+     "spec/cambric/cambric_spec.rb",
+     "spec/cambric/configurator_spec.rb",
+     "spec/cambric/test_helpers_spec.rb",
      "spec/spec_helper.rb"
   ]
 
