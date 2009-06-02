@@ -3,6 +3,8 @@ require 'open3'
 module Cambric
   module TestHelpers
     
+    class ReduceError < RuntimeError ; end
+    
     def execute_map db, view, doc
       view_functions = Cambric[db].cambric_design_doc['views'][view.to_s]
       execute_js <<-CODE
@@ -11,7 +13,7 @@ module Cambric
           emittedKeyValuePairs.push({ 'key': key, 'value': value });
         }
         var mapFunction = #{view_functions['map']};
-        mapFunction(#{doc.to_json});
+        try { mapFunction(#{doc.to_json}); } catch (e) {}
         returnValueToRuby(emittedKeyValuePairs);
       CODE
     end
@@ -21,11 +23,15 @@ module Cambric
       options = { :rereduce => false }.merge(options)
       execute_js <<-CODE
         var reduceFunction = #{view_functions['reduce']};
-        returnValueToRuby(reduceFunction(
-          #{(options[:keys] || []).to_json},
-          #{(options[:values] || []).to_json},
-          #{options[:rereduce]}
-        ));
+        try {
+          returnValueToRuby(reduceFunction(
+            #{(options[:keys] || []).to_json},
+            #{(options[:values] || []).to_json},
+            #{options[:rereduce]}
+          ));
+        } catch (error) {
+          raiseErrorToRuby(error);
+        }
       CODE
     end
     
@@ -37,9 +43,10 @@ module Cambric
         stdin.puts HELPER_FUNCTIONS
         stdin.puts code
         stdin.close
-        output = stdout.read
+        output = JSON.parse(stdout.read)
       end
-      JSON.parse(output)['result']
+      raise ReduceError, output['error'] if output.has_key?('error')
+      output['result']
     end
 
     HELPER_FUNCTIONS = <<-HELPERS
@@ -76,8 +83,12 @@ module Cambric
        }
       }
 
-      function returnValueToRuby(obj) {
-        print(toJSON({ result: obj }));
+      function returnValueToRuby(value) {
+        print(toJSON({ 'result': value }));
+      }
+      
+      function raiseErrorToRuby(error) {
+        print(toJSON({ 'error': error['message'] }));
       }
     HELPERS
     

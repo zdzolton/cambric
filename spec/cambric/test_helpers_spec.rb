@@ -22,14 +22,29 @@ describe Cambric::TestHelpers do
       kv_pairs[1]['value'].should == 'poddle'
     end
     
-    it "should skip any documents that throw an error"
+    it "should return an empty array when documents cause an exception" do
+      kv_pairs = execute_map :users, :bad, "doesn't" => 'matter'
+      kv_pairs.length.should == 1
+    end
   end
   
   describe "testing a view's reduce function" do
     
-    it "passed in keys...?"
-    it "passed in values...?"
-    it "should default to false for rereduce"
+    it "should default to false for rereduce" do
+      result = execute_reduce :users, :followers, :values => ['dr', 'quinn', 'medicine', 'woman']
+      result.should == 4
+    end
+    
+    it "should be able to execute a rereduce" do
+      result = execute_reduce :users, :followers, :values => [4, 5, 6], :rereduce => true
+      result.should == 15 
+    end
+    
+    it "should forward exceptions to Ruby" do
+      lambda do
+        execute_reduce :users, :bad, :values => ['what', 'ever']
+      end.should raise_error(Cambric::TestHelpers::ReduceError)
+    end
     
   end
 
