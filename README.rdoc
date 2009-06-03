@@ -52,15 +52,44 @@ by the application.
   # Except, you do NOT need to re-specify the design doc name when 
   # calling CouchRest::Database#view —since you're only using one!
   tweet_db.view 'by_follower_and_created_at', :limit => 1
+  
+4) Write unit tests for your JavaScript map-reduce functions:
 
-4) Push view/design doc changes to CouchDB:
+  class CambricViewTest < ActiveSupport::TestCase
+    include Cambric::TestHelpers
+    
+    test "should map a user to be keyed by who he follows" do
+      kv_pairs = execute_map :users,                                               # Database name
+                             :followers,                                           # View name
+                             '_id' => 'poddle', 'following' => ['jack', 'russel']  # Document attributes
+
+      assert_equal 2, kv_pairs.size
+      assert_equal 'jack',   kv_pairs[0]['key']
+      assert_equal 'poddle', kv_pairs[0]['value']
+      assert_equal 'russel', kv_pairs[1]['key']
+      assert_equal 'poddle', kv_pairs[1]['value']
+    end
+    
+    test "should reduce to a count of followers for a user" do
+      count = execute_reduce :values => ['poddle', 'larry']  # :keys don't matter for this reduce
+      assert_equal 2, count
+    end
+    
+    test "should re-reduce counts of followers for a user" do
+      count = execute_reduce :values => [2, 5, 1], :rereduce => true  # defaults to false
+      assert_equal 8, count
+    end
+    
+  end
+
+5) Push view/design doc changes to CouchDB:
 
   Cambric.push_design_docs
   
   # Alternatively, you can just call this, since it wont create
   # your database, if they already exist:
   Cambric.prepare_database
-
+  
 == Installation
 
 * Install gems:
