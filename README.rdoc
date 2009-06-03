@@ -71,12 +71,17 @@ by the application.
     end
     
     test "should reduce to a count of followers for a user" do
-      count = execute_reduce :values => ['poddle', 'larry']  # :keys don't matter for this reduce
+      count = execute_reduce :users,                         # Database name
+                             :followers,                     # View name
+                             :values => ['poddle', 'larry']  # :keys don't matter for this reduce
       assert_equal 2, count
     end
     
     test "should re-reduce counts of followers for a user" do
-      count = execute_reduce :values => [2, 5, 1], :rereduce => true  # defaults to false
+      count = execute_reduce :users,                # Database name
+                             :followers,            # View name
+                             :values => [2, 5, 1], 
+                             :rereduce => true      # defaults to false
       assert_equal 8, count
     end
     
