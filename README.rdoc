@@ -53,6 +53,11 @@ by the application.
   # calling CouchRest::Database#view —since you're only using one!
   tweet_db.view 'by_follower_and_created_at', :limit => 1
   
+  # Also, we can auto-cast doc from map-only views for you!
+  tweet_db.get_docs_from_view :by_follower_and_created_at, :cast_as => 'type'
+  # Or:
+  tweet_db.get_docs_from_view :by_follower_and_created_at, :cast_as => Tweet
+  
 4) Write unit tests for your JavaScript map-reduce functions:
 
   class CambricViewTest < ActiveSupport::TestCase
