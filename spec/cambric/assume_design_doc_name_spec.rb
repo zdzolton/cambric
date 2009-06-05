@@ -18,21 +18,33 @@ describe Cambric::AssumeDesignDocName do
       Cambric[:tweets].cambric_design_doc.should_not be_nil
     end
     
-    describe "get_docs_from_view" do
+    describe "Casting documents from map-only query results" do
       before :all do
-        Cambric[:users].save_doc '_id' => 'trevor', 'following' => %w(bob geoff scott brian zach)
-        Cambric[:users].save_doc '_id' => 'scott', 'following' => %w(bob geoff trevor brian zach)
+        class User < CouchRest::Document; end
+        Cambric[:users].bulk_save [
+          User.new('_id' => 'trevor', 'following' => %w(bob geoff scott brian zach), 'type' => 'User'),
+          User.new('_id' => 'scott', 'following' => %w(bob geoff trevor brian zach), 'type' => 'User')
+        ]
       end
       
-      it "should be able specify type to cast query result documents" do
-        user_struct = Struct.new(:hash)
-        followers = Cambric[:users].get_docs_from_view :followers, 
-                                                       :cast_as => user_struct, 
-                                                       :key => 'bob'
+      it "should cast to specified type, when cast_as is a type" do
+        followers = Cambric[:users].get_docs_from_view :followers, :cast_as => User, :key => 'bob'
         followers.should have(2).elements
-        followers.each{ |f| f.should be_a(user_struct) }
+        followers.each{ |f| f.should be_a(User) }
+      end
+      
+      it "should cast to type per-doc when cast_as is a string" do
+        followers = Cambric[:users].get_docs_from_view :followers, :cast_as => 'type', :key => 'bob'
+        followers.should have(2).elements
+        followers.each{ |f| f.should be_a(User) }
+      end
+      
+      it "should default to returning the plain doc hashes if cast_as is omitted" do
+        followers = Cambric[:users].get_docs_from_view :followers, :key => 'bob'
+        followers.should have(2).elements
+        followers.each{ |f| f.should be_a(Hash) }
       end
     end
         
-  end  
+  end
 end
