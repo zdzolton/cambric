@@ -11,7 +11,11 @@ describe Cambric::AssumeDesignDocName do
     after(:all){ delete_twitter_clone_databases }
     
     it "should be able to query view without re-specifying design doc name" do
-      Cambric[:tweets].view 'by_follower_and_created_at'
+      Cambric[:tweets].view :by_follower_and_created_at
+    end
+    
+    it "should be able to specify design doc name when giving a string" do
+      Cambric[:tweets].view 'twitter-clone/by_follower_and_created_at'
     end
     
     it "should get the design doc specified by configuration" do
