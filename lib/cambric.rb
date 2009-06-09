@@ -16,14 +16,20 @@ module Cambric
   def self.environment
     @environment
   end
+
+  def self.environment= value
+    @config.environment = value
+    @databases = @config.initialize_databases
+    @environment = @config.environment
+  end
   
   def self.configure
-    config = Configurator.new
-    yield config if block_given?
-    @databases = config.initialize_databases
-    @design_doc_name = config.design_doc_name
-    @db_dir = config.db_dir
-    @environment = config.environment
+    @config = Configurator.new
+    yield @config if block_given?
+    @databases = @config.initialize_databases
+    @design_doc_name = @config.design_doc_name
+    @db_dir = @config.db_dir
+    @environment = @config.environment
   end
   
   def self.create_databases!

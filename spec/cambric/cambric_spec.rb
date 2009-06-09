@@ -50,6 +50,20 @@ describe Cambric do
     it "should not blow up when calling push_design_docs for non-existent directories" do
       Cambric.push_design_docs
     end
+    
+    describe "after changing the environment" do
+      before :all do
+        Cambric.environment = 'development'
+      end
+      
+      it "should match the new environment value" do
+        Cambric.environment.should == 'development'
+      end
+      
+      it "should match the expected database URI for the new environment" do
+        Cambric[:tweets].uri.should == 'http://127.0.0.1:5984/tweets-development'
+      end
+    end
   end
     
   describe "after creating databases" do
