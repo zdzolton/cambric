@@ -4,12 +4,8 @@ module Cambric
     attr_accessor :cambric_design_doc_name
   
     def view name, options={}, &block
-      case name
-      when String
-        super name, options, &block
-      when Symbol
-        super "#{@cambric_design_doc_name}/#{name}", options, &block
-      end
+      name = "#{@cambric_design_doc_name}/#{name}" if name.is_a?(Symbol)
+      super name, options, &block
     end
     
     def cambric_design_doc
