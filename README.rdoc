@@ -109,36 +109,36 @@ by the application.
 * Configure Rails:
   * create a config/initializers/cambric.rb file as follows:
   
-    Cambric.configure do |config|
-      config.design_doc_name = 'YOUR_APP_NAME'
-      config.environment = RAILS_ENV
-
-      config.databases = {
-        :YOUR_DB_NAME => {
-          :development => "http://localhost:5984/YOUR_DB_NAME-development",
-          :test => "http://localhost:5984/YOUR_DB_NAME-test"
-        },
-        :YOUR_OTHER_DB => {
-          :development => "http://localhost:5984/YOUR_OTHER_DB-development",
-          :test => "http://localhost:5984/YOUR_OTHER_DB-test"
+      Cambric.configure do |config|
+        config.design_doc_name = 'YOUR_APP_NAME'
+        config.environment = RAILS_ENV
+        
+        config.databases = {
+          :YOUR_DB_NAME => {
+            :development => "http://localhost:5984/YOUR_DB_NAME-development",
+            :test => "http://localhost:5984/YOUR_DB_NAME-test"
+          },
+          :YOUR_OTHER_DB => {
+            :development => "http://localhost:5984/YOUR_OTHER_DB-development",
+            :test => "http://localhost:5984/YOUR_OTHER_DB-test"
+          }
         }
-      }
-    end
-
-    # Push design docs after every request in development, and once in production on app startup
-    ActionController::Dispatcher.to_prepare(:cambric){ Cambric.prepare_databases }
+      end
+      
+      # Push design docs after every request in development, and once in production on app startup
+      ActionController::Dispatcher.to_prepare(:cambric){ Cambric.prepare_databases }
     
   * place the following two lines in your test_helper.rb, at the top of the file after the 
     require statements:
-  
-    Cambric.environment = 'test'
-    Cambric.prepare_databases!
+
+      Cambric.environment = 'test'
+      Cambric.prepare_databases!
 
   * create a couchdb directory within your project:
 
-    $ cd /your/app/root
-    $ mkdir -p ./couchdb/your_db/views/some_view_name
-  
+      $ cd /your/app/root
+      $ mkdir -p ./couchdb/your_db/views/some_view_name
+
 == Copyright
 
 Copyright (c) 2009 Zachary Zolton. See LICENSE for details.
