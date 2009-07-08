@@ -51,7 +51,7 @@ module Cambric
   end
   
   def self.push_design_docs
-    @databases.keys.each{ |db| push_design_doc_for db.to_s }
+    @databases.keys.each{ |db_sym| push_design_doc_for db_sym.to_s }
   end
   
   def self.prepare_databases
@@ -69,7 +69,8 @@ private
   def self.push_design_doc_for database
     design_doc_path = File.join @db_dir, database
     if File.exist?(design_doc_path)
-      `couchapp push #{design_doc_path} #{@design_doc_name} #{self[database].uri}`
+      fm = FileManager.new self[database].name, self[database].host
+      fm.push_app design_doc_path, @design_doc_name
     end
   end
     
