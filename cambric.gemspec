@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cambric}
-  s.version = "0.6.3"
+  s.version = "0.6.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Zachary Zolton", "Geoff Buesing"]
-  s.date = %q{2009-06-09}
+  s.date = %q{2009-07-08}
   s.email = %q{zachary.zolton@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "lib/cambric.rb",
      "lib/cambric/assume_design_doc_name.rb",
      "lib/cambric/configurator.rb",
+     "lib/cambric/file_manager.rb",
      "lib/cambric/test_helpers.rb",
      "spec/cambric/assume_design_doc_name_spec.rb",
      "spec/cambric/cambric_spec.rb",
