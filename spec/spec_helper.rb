@@ -2,7 +2,7 @@ require 'spec'
 
 # Gem dependencies... Here?
 require 'rubygems'
-gem 'jchris-couchrest'
+gem 'mattetti-couchrest'
 
 require 'json'
 require 'couchrest'

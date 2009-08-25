@@ -61,7 +61,7 @@ describe Cambric do
       end
       
       it "should match the expected database URI for the new environment" do
-        Cambric[:tweets].uri.should == 'http://127.0.0.1:5984/tweets-development'
+        Cambric[:tweets].uri.should == '/tweets-development'
       end
     end
   end
@@ -82,7 +82,7 @@ describe Cambric do
     
     it "should have the expected URLs" do
       %w(users tweets).each do |db|
-        Cambric[db].uri.should == "http://127.0.0.1:5984/#{db}-testing"
+        Cambric[db].uri.should == "/#{db}-testing"
       end
     end
     

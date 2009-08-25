@@ -25,7 +25,7 @@ describe Cambric::Configurator do
     
     it "should have the expected URLs for development environment" do
       %w(users tweets).each do |db|
-        @dbs[db.to_sym].uri.should == "http://127.0.0.1:5984/#{db}-development"
+        @dbs[db.to_sym].uri.should == "/#{db}-development"
       end
     end
   end
