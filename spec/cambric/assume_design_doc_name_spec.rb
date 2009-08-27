@@ -22,8 +22,9 @@ describe Cambric::AssumeDesignDocName do
       Cambric[:tweets].cambric_design_doc.should_not be_nil
     end
     
-    describe "Casting documents from map-only query results" do
+    describe "Casting documents from reduce=false query results" do
       before :all do
+        Cambric[:tweets].save_doc 'author' => 'trevor', 'message' => "'sup, guys?", 'created_at' => '2009-06-06 11:52:34'
         class User < CouchRest::Document; end
         Cambric[:users].bulk_save [
           User.new('_id' => 'trevor', 'following' => %w(bob geoff scott brian zach), 'type' => 'User'),
@@ -32,21 +33,37 @@ describe Cambric::AssumeDesignDocName do
       end
       
       it "should cast to specified type, when cast_as is a type" do
-        followers = Cambric[:users].get_docs_from_view :followers, :cast_as => User, :key => 'bob'
+        followers = Cambric[:users].get_docs_from_view :followers, :cast_as => User, 
+                                                       :key => 'bob', :reduce => false
         followers.should have(2).elements
         followers.each{ |f| f.should be_a(User) }
       end
       
       it "should cast to type per-doc when cast_as is a string" do
-        followers = Cambric[:users].get_docs_from_view :followers, :cast_as => 'type', :key => 'bob'
+        followers = Cambric[:users].get_docs_from_view :followers, :cast_as => 'type', 
+                                                       :key => 'bob', :reduce => false
         followers.should have(2).elements
         followers.each{ |f| f.should be_a(User) }
       end
       
       it "should default to returning the plain doc hashes if cast_as is omitted" do
-        followers = Cambric[:users].get_docs_from_view :followers, :key => 'bob'
+        followers = Cambric[:users].get_docs_from_view :followers, 
+                                                       :key => 'bob', :reduce => false
         followers.should have(2).elements
         followers.each{ |f| f.should be_a(Hash) }
+      end
+    end
+    
+    describe "Casting documents from query results on a map-only view" do
+      before :all do
+        class Tweet < CouchRest::Document; end
+        Cambric[:tweets].save_doc Tweet.new('author' => 'trevor', 'message' => "'sup, guys?", 'created_at' => '2009-06-06 11:52:34', 'followers' => %w(zach scott geoff))
+      end
+      
+      it "should no longer put reduce=false into the query" do
+        tweets = Cambric[:tweets].get_docs_from_view :by_follower_and_created_at, 
+                                                     :limit => 1, :cast_as => Tweet
+        tweets.first.should be_a(Tweet)
       end
     end
         

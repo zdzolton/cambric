@@ -14,7 +14,7 @@ module Cambric
     
     def get_docs_from_view name, options={}
       cast_as = options.delete(:cast_as) || options.delete('cast_as')
-      results = view name, options.merge(:reduce => false, :include_docs => true)
+      results = view name, options.merge(:include_docs => true)
       mapper = case cast_as
         when String then lambda { |r| CouchRest.constantize(r['doc'][cast_as]).new(r['doc']) }
         when Class then lambda { |r| cast_as.new(r['doc']) }
