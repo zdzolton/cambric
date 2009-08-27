@@ -104,7 +104,7 @@ by the application.
 
 * Install gems:
 
-  $ sudo gem install jchris-couchrest zdzolton-cambric
+  $ sudo gem install mattetti-couchrest zdzolton-cambric
 
 * Configure Rails:
   * create a config/initializers/cambric.rb file as follows:
