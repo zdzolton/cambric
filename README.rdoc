@@ -125,14 +125,16 @@ by the application.
         }
       end
       
-      # Push design docs after every request in development, and once in production on app startup
-      ActionController::Dispatcher.to_prepare(:cambric){ Cambric.prepare_databases }
-    
-  * place the following two lines in your test_helper.rb, at the top of the file after the 
-    require statements:
-
-      Cambric.environment = 'test'
-      Cambric.prepare_databases!
+      ActionController::Dispatcher.to_prepare(:cambric) do
+        if RAILS_ENV == 'test'
+          # Re-create databases each time in test environment
+          Cambric.prepare_databases!
+        else 
+          # Push design docs after every request in 
+          # development, and once in production on app startup
+          Cambric.prepare_databases
+        end
+      end
 
   * create a couchdb directory within your project:
 
