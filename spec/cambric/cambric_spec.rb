@@ -131,6 +131,28 @@ describe Cambric do
       design_doc = Cambric[:tweets].get("_design/twitter-clone")
       design_doc['views']['by_follower_and_created_at'].should_not be_nil
     end
+  
+    describe "after priming modified views in a temp design doc" do
+      before :all do
+        Cambric[:tweets].save_doc :message => 'ohai!',
+                                  :author => 'zach',
+                                  :followers => %w(trevor geoff),
+                                  :created_at => '2009/09/01T12:51:42Z'
+        reconfigure_twitter_clone_to_modified_code
+        Cambric.prime_view_changes_in_temp
+      end
+      
+      it "should be able to hit new views on temp design doc" do
+        db = CouchRest.database('http://127.0.0.1:5984/tweets-testing')
+        result = db.view 'twitter-clone-temp/by_follower_and_created_at', :limit => 1
+        result['rows'].first['key'].should be_a(String)
+      end
+      
+      it "should be able to hit old views on original design doc" do
+        result = Cambric[:tweets].view :by_follower_and_created_at, :limit => 1
+        result['rows'].first['key'].should be_an(Array)
+      end
+    end
   end
   
   describe "when the design doc already exists" do

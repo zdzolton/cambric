@@ -46,12 +46,12 @@ module Cambric
     @databases.each_pair{ |name,db| db.server.create_db db.name rescue nil }
   end
   
-  def self.[](database)
-    @databases[database.to_sym]
+  def self.[](database_name)
+    @databases[database_name.to_sym]
   end
   
-  def self.push_design_docs
-    @databases.keys.each{ |db_sym| push_design_doc_for db_sym.to_s }
+  def self.push_design_docs ddoc_name=nil
+    @databases.keys.each{ |db_sym| push_design_doc_for db_sym, ddoc_name }
   end
   
   def self.prepare_databases
@@ -63,14 +63,32 @@ module Cambric
     create_databases!
     push_design_docs
   end
-   
+  
+  def self.prime_view_changes_in_temp
+    ddoc_name = "#{@design_doc_name}-temp"
+    push_design_docs ddoc_name
+    @databases.keys.map do |db_name|
+      Thread.new{ prime_views_for @databases[db_name], ddoc_name }
+    end.each{ |t| t.join }
+  end
+  
 private
 
-  def self.push_design_doc_for database
+  def self.prime_views_for database, ddoc_name=nil
+    ddoc = database.get "_design/#{ddoc_name}"
+    view_name, view_def = ddoc['views'].first
+    opts = { :limit => 1 }
+    opts[:reduce] = false if view_def['reduce']
+    view_url = "#{database.root}/_design/#{ddoc_name}/_view/#{view_name}"
+    %x[curl --silent '#{CouchRest.paramify_url view_url, opts}']
+  end
+
+  def self.push_design_doc_for database_name, ddoc_name=nil
+    database = database_name.to_s
     design_doc_path = File.join @db_dir, database
     if File.exist?(design_doc_path)
       fm = FileManager.new self[database].name, self[database].host
-      fm.push_app design_doc_path, @design_doc_name
+      fm.push_app design_doc_path, ddoc_name || @design_doc_name
     end
   end
     
