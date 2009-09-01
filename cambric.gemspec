@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cambric}
-  s.version = "0.7.0"
+  s.version = "0.7.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Zachary Zolton", "Geoff Buesing"]
-  s.date = %q{2009-08-27}
+  s.date = %q{2009-09-01}
   s.email = %q{zachary.zolton@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -29,6 +29,11 @@ Gem::Specification.new do |s|
      "spec/cambric/cambric_spec.rb",
      "spec/cambric/configurator_spec.rb",
      "spec/cambric/test_helpers_spec.rb",
+     "spec/fixtures/twitter-clone-modified/tweets/views/by_follower_and_created_at/map.js",
+     "spec/fixtures/twitter-clone-modified/users/views/bad/map.js",
+     "spec/fixtures/twitter-clone-modified/users/views/bad/reduce.js",
+     "spec/fixtures/twitter-clone-modified/users/views/followers/map.js",
+     "spec/fixtures/twitter-clone-modified/users/views/followers/reduce.js",
      "spec/fixtures/twitter-clone/tweets/views/by_follower_and_created_at/map.js",
      "spec/fixtures/twitter-clone/users/views/bad/map.js",
      "spec/fixtures/twitter-clone/users/views/bad/reduce.js",
