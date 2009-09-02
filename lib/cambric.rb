@@ -34,11 +34,8 @@ module Cambric
   
   def self.create_databases!
     @databases.each_pair do |name,db|
-      begin
-        db.server.create_db db.name
-      rescue
-        db.server.database(db.name).recreate!
-      end
+      db.delete! rescue nil
+      db.create!
     end
   end
   
