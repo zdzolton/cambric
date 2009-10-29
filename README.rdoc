@@ -7,7 +7,7 @@ databases/hosts, in a manner that wont muck up your application code.
 Moreover, it encourages you to use one design document per database used
 by the application.
 
-(BTW, there's nothing specific to Rails in how this works.)
+BTW, there's nothing specific to Rails in how this works. (^_-)
 
 == Usage
 
@@ -100,11 +100,15 @@ by the application.
   # your database, if they already exist:
   Cambric.prepare_database
   
+  # Now for the real trick! This invocation will block until
+  # your changed design docs have primed their views:
+  Cambric.prime_view_changes_in_temp
+
 == Installation
 
 * Install gems:
 
-  $ sudo gem install mattetti-couchrest zdzolton-cambric
+  $ sudo gem install couchrest-couchrest zdzolton-cambric
 
 * Configure Rails:
   * create a config/initializers/cambric.rb file as follows:
@@ -126,15 +130,16 @@ by the application.
       end
       
       ActionController::Dispatcher.to_prepare(:cambric) do
-        if RAILS_ENV == 'test'
-          # Re-create databases each time in test environment
+        case RAILS_ENV
+        when 'test'
           Cambric.prepare_databases!
-        else 
-          # Push design docs after every request in 
-          # development, and once in production on app startup
+        when 'production'
+          # Let's not automagically do anything!
+        else
           Cambric.prepare_databases
         end
       end
+      
 
   * create a couchdb directory within your project:
 
