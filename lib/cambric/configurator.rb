@@ -14,17 +14,15 @@ module Cambric
       dbs_by_name = {}
       @databases.each_pair do |db,urls_by_env|
         urls_by_env.keys.map!{ |env| env.to_sym }
-        uri = URI.parse urls_by_env[@environment.to_sym]
-        dbs_by_name[db.to_sym] = initialize_database uri
+        dbs_by_name[db.to_sym] = initialize_database(urls_by_env[@environment.to_sym])
       end
       dbs_by_name
     end
   
   private
 
-    def initialize_database uri
-      server = CouchRest.new("#{uri.scheme}://#{uri.host}:#{uri.port}")
-      database = server.database uri.path.gsub(/^\//, '')
+    def initialize_database url
+      database = CouchRest.database url
       database.extend ::Cambric::AssumeDesignDocName
       database.cambric_design_doc_name = @design_doc_name
       database
