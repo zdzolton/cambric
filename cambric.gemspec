@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cambric}
-  s.version = "0.7.4"
+  s.version = "0.8.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Zachary Zolton", "Geoff Buesing"]
-  s.date = %q{2009-11-05}
+  s.date = %q{2010-05-28}
   s.email = %q{zachary.zolton@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -48,7 +48,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/zdzolton/cambric}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Opinionated management and usage of CouchDB from your Ruby apps.}
   s.test_files = [
     "spec/cambric/assume_design_doc_name_spec.rb",
