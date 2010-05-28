@@ -2,7 +2,7 @@ require 'spec'
 
 # Gem dependencies... Here?
 require 'rubygems'
-gem 'mattetti-couchrest'
+gem 'couchrest'
 
 require 'json'
 require 'couchrest'
@@ -16,12 +16,12 @@ require 'cambric'
 
 TWITTER_CLONE_DATABASES = {
   :users => {
-    :development => 'http://127.0.0.1:5984/users-development',
-    :test => 'http://127.0.0.1:5984/users-testing'
+    :development => 'http://devadmin:foo@127.0.0.1:5984/users-development',
+    :test => 'http://devadmin:foo@127.0.0.1:5984/users-testing'
   },
   :tweets => {
-    :development => 'http://127.0.0.1:5984/tweets-development',
-    :test => 'http://127.0.0.1:5984/tweets-testing'
+    :development => 'http://devadmin:foo@127.0.0.1:5984/tweets-development',
+    :test => 'http://devadmin:foo@127.0.0.1:5984/tweets-testing'
   }
 }
 
