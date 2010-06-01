@@ -113,7 +113,7 @@ BTW, there's nothing specific to Rails in how this works. (^_-)
 
 * Install gems:
 
-  $ sudo gem install couchrest-couchrest zdzolton-cambric
+  $ sudo gem install rest-client couchrest-couchrest zdzolton-cambric
 
 * Configure Rails:
   * create a config/initializers/cambric.rb file as follows:
