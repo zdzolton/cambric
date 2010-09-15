@@ -5,6 +5,23 @@ Dir.glob(File.join(File.dirname(__FILE__), 'cambric/**.rb')).each{ |f| require f
 
 module Cambric
   
+  # extracted from Extlib
+  #
+  # Constantize tries to find a declared constant with the name specified
+  # in the string. It raises a NameError when the name is not in CamelCase
+  # or is not initialized.
+  #
+  # @example
+  # "Module".constantize #=> Module
+  # "Class".constantize #=> Class
+  def self.constantize(camel_cased_word)
+    unless /\A(?:::)?([A-Z]\w*(?:::[A-Z]\w*)*)\z/ =~ camel_cased_word
+      raise NameError, "#{camel_cased_word.inspect} is not a valid constant name!"
+    end
+
+    Object.module_eval("::#{$1}", __FILE__, __LINE__)
+  end
+  
   def self.design_doc_name
     @design_doc_name
   end
